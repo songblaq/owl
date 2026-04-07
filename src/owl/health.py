@@ -42,6 +42,34 @@ STOP_TERMS = {
 }
 BRAIN_LINK_RE = re.compile(r"(?:compiled|raw|outputs|views|research)/[^`\s)]*\.[A-Za-z0-9._-]+")
 
+# Required headers for compiled/*.md per compiled-format-spec-v0.md §3
+REQUIRED_HEADERS = ("상태:", "유형:", "출처:", "작성일:", "관련 항목:")
+
+# Code block patterns for strip_code_blocks().
+# - Fenced: ``` ... ``` (language tag allowed, non-greedy, DOTALL)
+# - Inline: `...` (no embedded backtick)
+FENCED_BLOCK_RE = re.compile(r"```[\s\S]*?```")
+INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
+
+
+def strip_code_blocks(content: str) -> str:
+    """Remove markdown code blocks from content before regex matching.
+
+    Prevents false positives where a literal like ``outputs/*`` inside a
+    quoted code block is treated as a real link. Used by link-extraction
+    functions.
+
+    Strips:
+      - Triple-backtick fenced blocks (```...```), non-greedy DOTALL
+      - Inline backticks (`...`), no embedded newline
+
+    4-space indented code blocks are NOT stripped (more complex to detect
+    safely without context; callers should avoid 4-space in stray places).
+    """
+    content = FENCED_BLOCK_RE.sub("", content)
+    content = INLINE_CODE_RE.sub("", content)
+    return content
+
 
 @dataclass
 class Issue:
@@ -116,7 +144,7 @@ def relative_path(base: Path, path: Path) -> str:
 
 
 def extract_brain_links(content: str) -> List[str]:
-    return BRAIN_LINK_RE.findall(content)
+    return BRAIN_LINK_RE.findall(strip_code_blocks(content))
 
 
 def existing_brain_paths(base: Path) -> Set[str]:
@@ -167,7 +195,7 @@ def check_missing_related(base: Path) -> List[Issue]:
 
 
 def extract_output_links(content: str) -> List[str]:
-    return re.findall(r"outputs/[^`\s)]+", content)
+    return re.findall(r"outputs/[^`\s)]+", strip_code_blocks(content))
 
 
 def check_report_outputs(base: Path) -> List[Issue]:
@@ -353,9 +381,34 @@ def check_weak_backlinks(base: Path) -> List[Issue]:
     return issues
 
 
+def check_required_headers(base: Path) -> List[Issue]:
+    """Every compiled/*.md must have all 5 required headers from
+    compiled-format-spec-v0.md §3:
+        상태: / 유형: / 출처: / 작성일: / 관련 항목:
+
+    Missing headers are flagged as medium. This rule complements
+    check_missing_related (which only catches missing 관련 항목:).
+    """
+    issues: List[Issue] = []
+    for path in compiled_files(base):
+        content = read_text(path)
+        missing = [h for h in REQUIRED_HEADERS if h not in content]
+        if missing:
+            issues.append(
+                Issue(
+                    rule="missing-required-headers",
+                    severity="medium",
+                    path=path,
+                    detail=f"missing: {', '.join(missing)}",
+                )
+            )
+    return issues
+
+
 ALL_RULES = (
     check_missing_summaries,
     check_missing_related,
+    check_required_headers,
     check_report_outputs,
     check_concept_candidates,
     check_index_candidates,
@@ -416,6 +469,7 @@ def summarize(issues: List[Issue], base: Path) -> str:
         worst_rule, worst_count = max(candidate_rules, key=lambda x: x[1])
         delegate = {
             "missing-summary-for-raw": "owl-compiler subagent",
+            "missing-required-headers": "owl-librarian subagent (header fix)",
             "broken-cross-reference": "owl-librarian subagent",
             "dangling-link": "owl-librarian subagent",
             "report-broken-output-link": "owl-librarian subagent",
