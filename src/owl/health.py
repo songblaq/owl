@@ -380,11 +380,15 @@ def summarize(issues: List[Issue], base: Path) -> str:
     lines.append(f"issues: {len(issues)}")
     if not issues:
         lines.append("status: clean")
+        lines.append("")
+        lines.append("Next steps: vault is healthy. Continue with other work.")
         return "\n".join(lines)
 
     grouped: Dict[str, List[Issue]] = {}
+    severity_counts: Counter = Counter()
     for issue in issues:
         grouped.setdefault(issue.rule, []).append(issue)
+        severity_counts[issue.severity] += 1
 
     for rule, entries in grouped.items():
         lines.append("")
@@ -392,6 +396,37 @@ def summarize(issues: List[Issue], base: Path) -> str:
         for item in entries:
             rel = item.path.relative_to(base)
             lines.append(f"- ({item.severity}) {rel} :: {item.detail}")
+
+    # Next steps — LLM consumption hints (also helpful to humans).
+    # Worst rule = highest count among the highest severity tier.
+    lines.append("")
+    lines.append("Next steps (for LLM agents and humans):")
+    high_n = severity_counts.get("high", 0)
+    if high_n >= 50:
+        lines.append(f"  - {high_n} HIGH-severity issues. This is urgent — escalate to user.")
+    elif high_n >= 10:
+        lines.append(f"  - {high_n} high-severity issues. Use `owl health --json` for structured input to subagents.")
+    # Find the worst rule by count, restricted to high if any high exist
+    candidate_rules = (
+        [(r, len(es)) for r, es in grouped.items() if any(e.severity == "high" for e in es)]
+        if high_n
+        else [(r, len(es)) for r, es in grouped.items()]
+    )
+    if candidate_rules:
+        worst_rule, worst_count = max(candidate_rules, key=lambda x: x[1])
+        delegate = {
+            "missing-summary-for-raw": "owl-compiler subagent",
+            "broken-cross-reference": "owl-librarian subagent",
+            "dangling-link": "owl-librarian subagent",
+            "report-broken-output-link": "owl-librarian subagent",
+            "weak-backlinks": "owl-librarian subagent",
+            "stale-compiled-newer-raw": "user review (do NOT auto-fix)",
+            "concept-candidate-missing": "owl-librarian subagent (promotion)",
+            "index-candidate-missing": "owl-librarian subagent (promotion)",
+            "orphan-concept": "user review (delete or backlink)",
+        }.get(worst_rule, "owl-librarian or owl-compiler subagent")
+        lines.append(f"  - Worst rule: {worst_rule} ({worst_count} entries) → delegate to {delegate}.")
+    lines.append("  - Pipe `owl health --json` to /owl-health for an LLM-interpreted fix plan.")
     return "\n".join(lines)
 
 

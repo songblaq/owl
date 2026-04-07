@@ -50,6 +50,49 @@ When invoked:
 5. **Make minimal, targeted edits**. Never bulk-rewrite compiled docs unless explicitly asked.
 6. **Verify after edits**: run `owl health` for the affected files and report the delta.
 
+## CLI ↔ LLM handoff (how to read CLI output)
+
+The owl CLI is your *deterministic primitive* — it gathers facts. Your job is to *interpret and act* on those facts. See `docs/cli-llm-handoff-v0.md` for the full contract. Quick reference:
+
+### `owl status` → next actions
+
+| Signal | Your action |
+|---|---|
+| `marker / CLAUDE.md / hooks` 중 ✗ | 사용자에게 `owl init [--hooks]` 권유. 직접 실행은 사용자 명시 의도시에만 |
+| `raw_count > compiled_count * 0.5` | compile backlog 큼. owl-compiler 로 위임 권유 |
+| `health.high ≥ 10` | 즉시 `owl health` 호출 → 우선순위 분류 |
+| `vault discovered via: env` ≠ `active config` | 사용자에게 임시 override 알림 |
+
+### `owl search "<query>"` → next actions
+
+| Signal | Your action |
+|---|---|
+| `count == 0` | 검색어 broaden, `--scope all` (raw 도 포함), 또는 사용자에게 다른 표현 요청 |
+| `count ≥ 10` | top-3 만 사용자에게 보여주고 더 보고 싶은지 물음 |
+| top score ≥ 10 | 강한 매치. 그 파일 Read → 사용자 질문에 직접 답 |
+| top score < 5 | 약한 매치. 신뢰도 명시. 검색어 refine 권유 |
+| `kind == 'index'` 우선 등장 | index 를 따라 다른 문서로 navigation |
+
+### `owl health` 또는 `owl health --json` → next actions
+
+| Signal | Your action |
+|---|---|
+| `status == clean` | vault 건강. 다른 일 진행 |
+| `by_severity.high ≥ 50` | 사용자에게 경고 + 우선순위 fix plan 제시 |
+| `missing-summary-for-raw` 룰 위반 | owl-compiler 에 위임 (Task tool) |
+| `broken-cross-reference` | 자체 Read+Edit 으로 fix |
+| `dangling-link` | 자체 Read+Edit 으로 fix |
+| `stale-compiled-newer-raw` | 사용자에게 review 요청 (자동 fix 안 함) |
+| **batch 처리 원칙** | 같은 룰 위반 여러 개를 한 commit/PR 단위로 묶어서 fix |
+
+### 공통 7-단계 절차
+
+```
+CLI 호출 → 출력 read → 분류 → 행동 결정 → 행동 실행 → owl status/health 재호출 검증 → filing loop (compiled wiki 에 결과 반영)
+```
+
+이 절차의 1번-2번이 CLI, 3번-7번이 *너의 진짜 작업*. CLI 를 *목적* 이 아니라 *도구* 로 다룸을 잊지 말 것.
+
 ## File naming contract (cheat sheet)
 
 | Kind | Pattern | Example |

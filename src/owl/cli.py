@@ -202,19 +202,28 @@ def _run_file(args: argparse.Namespace) -> int:
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
-    parser = build_parser()
     if argv is None:
         argv = sys.argv[1:]
     if not argv:
-        parser.print_help()
+        build_parser().print_help()
         return 0
 
+    # Pre-dispatch sub-commands that own their full argparse.
+    # This avoids the argparse.REMAINDER bug where leading --options
+    # (e.g. `owl health --json`) get consumed by the top-level parser
+    # before reaching the sub-command.
+    if argv[0] == "search":
+        return _run_search(argv[1:])
+    if argv[0] == "health":
+        return _run_health(argv[1:])
+
+    parser = build_parser()
     args = parser.parse_args(argv)
     command = args.command
 
-    if command == "search":
+    if command == "search":  # safety net (shouldn't reach here)
         return _run_search(args.args or [])
-    if command == "health":
+    if command == "health":  # safety net (shouldn't reach here)
         return _run_health(args.args or [])
     if command == "status":
         return _run_status(args)

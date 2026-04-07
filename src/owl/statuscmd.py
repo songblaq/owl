@@ -134,4 +134,27 @@ def show_status(vault_arg: Optional[str] = None, json_out: bool = False) -> int:
     elif health and "error" in health:
         print(f"Health: error — {health['error']}")
 
+    # Next steps — LLM consumption hints (also helpful to humans).
+    # Skipped in --json output (would corrupt JSON parsing).
+    next_steps = []
+    if not info["marker_present"] or not info["claude_md_present"]:
+        next_steps.append("Vault not initialized — run `owl init` (or `owl init --hooks`).")
+    elif not info["hooks_installed"]:
+        next_steps.append("Vault has no Claude Code hooks — run `owl init --hooks` for auto-maintenance.")
+    if counts.get("raw", 0) > 2 * counts.get("compiled", 0) + 5:
+        next_steps.append(
+            f"Compile backlog: {counts['raw']} raw vs {counts['compiled']} compiled. "
+            "Delegate to owl-compiler subagent or run `/owl-compile`."
+        )
+    if health and "total" in health and health["by_severity"].get("high", 0) >= 10:
+        next_steps.append(
+            f"{health['by_severity']['high']} high-severity health issues — "
+            "run `owl health --json` and pipe to owl-health subagent."
+        )
+    if next_steps:
+        print()
+        print("Next steps (for LLM agents and humans):")
+        for s in next_steps:
+            print(f"  - {s}")
+
     return 0

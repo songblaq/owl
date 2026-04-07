@@ -149,9 +149,14 @@ def search(
     return results[:limit]
 
 
-def format_results(base: Path, matches: List[Match]) -> str:
+def format_results(base: Path, matches: List[Match], query: str = "") -> str:
     if not matches:
-        return "No matches found."
+        return (
+            "No matches found.\n\n"
+            "Next steps (for LLM agents and humans):\n"
+            "  - Try broader terms or `--scope all` to include raw/.\n"
+            "  - If still empty, the topic may not be in the vault yet — consider ingesting source material."
+        )
 
     lines: List[str] = []
     for idx, match in enumerate(matches, start=1):
@@ -161,6 +166,20 @@ def format_results(base: Path, matches: List[Match]) -> str:
         lines.append(f"    type: {match.kind}")
         lines.append(f"    score: {match.score}")
         lines.append(f"    snippet: {match.snippet}")
+
+    # Next steps — LLM consumption hints (also helpful to humans).
+    top_score = matches[0].score
+    count = len(matches)
+    lines.append("")
+    lines.append("Next steps (for LLM agents and humans):")
+    if top_score >= 10:
+        lines.append(f"  - Top hit score {top_score} is strong — Read the file directly to answer the query.")
+    elif top_score < 5:
+        lines.append(f"  - Top score {top_score} is weak — refine the query, or use `--scope all` to widen.")
+    if count >= 10:
+        lines.append(f"  - {count} results — show the user top-3 first, ask if they want more.")
+    if any(m.kind == "index" for m in matches[:3]):
+        lines.append("  - An index document is in the top results — follow its links for navigation.")
     return "\n".join(lines)
 
 

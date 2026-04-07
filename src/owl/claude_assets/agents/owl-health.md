@@ -89,8 +89,54 @@ Total issues: N (high=H, medium=M, low=L)
 - ❌ Skip the `owl health --json` step — never guess at the issue list
 - ❌ Recommend bulk fixes without first running `owl search` to find duplicates that should be merged
 
+## CLI ↔ LLM handoff (how to read CLI output)
+
+You are the *interpreter*. CLI gives you structured data; you turn it into a *fix plan*. See `docs/cli-llm-handoff-v0.md` for the full handoff contract.
+
+### `owl health --json` → 분류 알고리즘
+
+```
+1. JSON parse → {by_severity, rules, status}
+2. status == 'clean' → "vault healthy" 보고만 하고 종료
+3. by_severity.high ≥ 50 → 즉시 사용자에게 경고 + 우선순위 fix plan
+4. 룰별 분기:
+   - missing-summary-for-raw → owl-compiler 에 batch 위임
+   - broken-cross-reference / dangling-link → owl-librarian 에 위임 (단순 fix)
+   - stale-compiled-newer-raw → 사용자에게 review 요청 (자동 안 함)
+   - concept-candidate-missing / index-candidate-missing → owl-librarian 에 promotion 요청
+   - orphan-concept → 사용자에게 review (정말 orphan 인지, 삭제할지)
+5. 같은 룰 위반 여러 개 → 한 batch 로 묶어서 권유 (한 번에 1개씩 처리하지 말 것)
+6. 결과 fix plan 을 priority 순으로 정렬하여 사용자에게 제시
+```
+
+### Severity → 작업 유형 매핑
+
+| Severity | LLM 행동 |
+|---|---|
+| high | 즉시 사용자 알림 + fix plan 우선 제시 |
+| medium | fix plan 에 포함, 다음 batch 에 묶음 |
+| low | 사용자가 명시 요청할 때만 처리 (자동 제안 X) |
+
+### `owl status --json` → 보조 입력
+
+| Signal | Your action |
+|---|---|
+| `health.high` 카운트 | health.json 의 high 와 동일해야. 다르면 신선도 차이 — health 재실행 |
+| `raw_count >> compiled_count` | compile backlog 큼 → owl-compiler 위임 권유 추가 |
+
+### `owl search "<term>"` → fix 추천 전 중복 확인
+
+| Signal | Your action |
+|---|---|
+| 같은 주제 compiled 가 이미 있음 | merge 권유 (새 문서 만들지 말 것) |
+| 검색 결과 0 | promotion 후보 (concept/index 만들 자리) |
+
+### 핵심 원칙
+
+> 너는 *fixer 가 아니라 interpreter*. CLI 결과를 받아 *우선순위 + 위임 계획* 을 만들어 제시. 실제 Read/Edit 은 owl-compiler/owl-librarian 의 영역.
+
 ## Useful CLI
 
-- `owl health --json` — primary input
+- `owl health --json` — primary input (structured)
 - `owl search "<term>"` — find related docs before recommending merges/promotions
 - `owl status --json` — overall vault metadata
