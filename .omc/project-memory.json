@@ -83,8 +83,8 @@
   "hotPaths": [
     {
       "path": "README.md",
-      "accessCount": 17,
-      "lastAccessed": 1775576471630,
+      "accessCount": 19,
+      "lastAccessed": 1775578085250,
       "type": "file"
     },
     {
@@ -124,6 +124,12 @@
       "type": "file"
     },
     {
+      "path": "pyproject.toml",
+      "accessCount": 5,
+      "lastAccessed": 1775578080288,
+      "type": "file"
+    },
+    {
       "path": "src/agent_brain/initcmd.py",
       "accessCount": 4,
       "lastAccessed": 1775529820504,
@@ -133,12 +139,6 @@
       "path": "docs/roadmap-v0.md",
       "accessCount": 4,
       "lastAccessed": 1775548873227,
-      "type": "file"
-    },
-    {
-      "path": "pyproject.toml",
-      "accessCount": 4,
-      "lastAccessed": 1775574699498,
       "type": "file"
     },
     {

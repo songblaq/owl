@@ -1,5 +1,11 @@
 # owl
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Karpathy LLM Wiki](https://img.shields.io/badge/pattern-Karpathy_LLM_Wiki_(2026)-purple.svg)](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
+[![Spirit: Memex](https://img.shields.io/badge/spirit-Bush_Memex_(1945)-orange.svg)](https://en.wikipedia.org/wiki/Memex)
+[![Claude Code](https://img.shields.io/badge/integrates-Claude_Code-green.svg)](https://docs.claude.com/claude-code)
+
 A personal LLM-maintained wiki.
 
 You bring the sources. The LLM does everything else — files them,
