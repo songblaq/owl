@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "owl"
+version = "0.1.0"
+description = "owl — Karpathy LLM Wiki implementation. Personal LLM-maintained wiki, inspired by Vannevar Bush's Memex (1945)."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "Luca" }]
+keywords = ["llm", "knowledge-base", "wiki", "claude-code", "obsidian", "karpathy", "memex"]
+
+[project.scripts]
+owl = "owl.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["owl*"]
+
+[tool.setuptools.package-data]
+owl = [
+    "claude_assets/agents/*.md",
+    "claude_assets/commands/*.md",
+    "claude_assets/vault-template/*",
+    "claude_assets/vault-template/.claude/*",
+    "claude_assets/vault-template/.claude/commands/*",
+]

@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# OMC runtime state (keep .omc/project-memory.json)
+.omc/state/
+.omc/sessions/
+.omc/logs/
+.omc/research/
+.omc/plans/
+.omc/notepad.md
+.omc/artifacts/
+
+# Editor noise
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Local environment
+.env
+.env.local
