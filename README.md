@@ -17,7 +17,7 @@ owl is the Karpathy pattern made executable: a CLI, a set of Claude Code hooks, 
 ## Quick Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yourname/owl/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/songblaq/owl/main/install.sh | sh
 ```
 
 설치 후 `owl setup` 이 자동 실행되며 vault 발견, 서브에이전트 심링크, hook 활성화를 단계별로 안내한다. 그 다음:

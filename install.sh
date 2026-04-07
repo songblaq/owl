@@ -6,7 +6,7 @@
 # spiritually descended from Vannevar Bush's Memex (1945).
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/<owner>/owl/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/songblaq/owl/main/install.sh | sh
 #
 # What it does:
 #   1. Clones (or updates) the project repo to ~/_/projects/owl
@@ -23,7 +23,7 @@
 set -euo pipefail
 
 REPO_DIR="${OWL_REPO:-${AGENT_BRAIN_REPO:-$HOME/_/projects/owl}}"
-REPO_URL="${OWL_REPO_URL:-${AGENT_BRAIN_REPO_URL:-https://github.com/<owner>/owl.git}}"
+REPO_URL="${OWL_REPO_URL:-${AGENT_BRAIN_REPO_URL:-https://github.com/songblaq/owl.git}}"
 BRANCH="${OWL_BRANCH:-${AGENT_BRAIN_BRANCH:-main}}"
 
 say() { printf '\033[1;36m%s\033[0m\n' "$*"; }
