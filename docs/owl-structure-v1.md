@@ -1,11 +1,11 @@
-# Agent Brain 구조도 v1
+# owl 구조도 v1
 
 작성일: 2026-04-03
 상태: 초안
 
 ## 1. 개요
 
-Agent Brain은 전체 LLM Knowledge System(LKS) 프로젝트다.
+owl은 전체 LLM Knowledge System(LKS) 프로젝트다.
 
 - **LKS**: 전체 체계
 - **KIB**: raw/compiled 정보를 보관하고 열람하는 기반
@@ -51,4 +51,4 @@ graph LR
 
 ### 출력과 환류
 - Q&A와 보고서, 슬라이드 같은 산출물은 다시 compiled 쪽으로 환류될 수 있다.
-- 이로써 Agent Brain은 정적 저장소가 아니라 성장하는 체계가 된다.
+- 이로써 owl은 정적 저장소가 아니라 성장하는 체계가 된다.

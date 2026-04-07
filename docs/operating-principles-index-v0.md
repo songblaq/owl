@@ -4,7 +4,7 @@
 상태: v0
 
 ## 목적
-Agent Brain과 에이전트 운영의 핵심 원칙을 한 곳에 모아 인덱싱한다.
+owl과 에이전트 운영의 핵심 원칙을 한 곳에 모아 인덱싱한다.
 
 ## 상위 원칙
 - [[docs/agent-cli-doc-first-operating-principle-v0.md]] — Agent CLI First + Doc First 합본

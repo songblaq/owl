@@ -5,7 +5,7 @@
 
 ## 1. 정의
 
-Obsidian은 Agent Brain의 기본 surface이자 IDE frontend다.
+Obsidian은 owl의 기본 surface이자 IDE frontend다.
 
 이는 단순 노트 앱이 아니라 다음을 함께 다루는 작업 표면이다.
 - raw source

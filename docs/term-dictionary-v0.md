@@ -1,11 +1,11 @@
-# Agent Brain 용어 사전 v0
+# owl 용어 사전 v0
 
 작성일: 2026-04-03
 상태: 초안
 
 ## 상위 개념
 
-### Agent Brain
+### owl
 에이전트가 사용하는 전체 지식 체계 프로젝트 이름.
 
 ### LKS — LLM Knowledge System

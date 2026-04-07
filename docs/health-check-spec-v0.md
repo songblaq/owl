@@ -5,7 +5,7 @@
 
 ## 1. 목적
 
-Karpathy가 말한 linting / health checks를 Agent Brain 운영 규칙으로 구체화한다.
+Karpathy가 말한 linting / health checks를 owl 운영 규칙으로 구체화한다.
 
 ---
 

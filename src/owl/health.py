@@ -26,7 +26,7 @@ from typing import Dict, List, Optional, Sequence, Set
 from owl.vault import discover_vault
 
 STOP_TERMS = {
-    "Agent Brain",
+    "owl",
     "OpenClaw",
     "Hermes",
     "Index",

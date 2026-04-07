@@ -180,7 +180,7 @@ def matches_to_json(base: Path, matches: List[Match]) -> str:
 
 def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Search Agent Brain raw/compiled/wiki files without fancy RAG."
+        description="Search owl vault (raw/compiled/wiki) without fancy RAG."
     )
     parser.add_argument("query", help='Search query, e.g. "filing loop" or "priority query"')
     parser.add_argument(

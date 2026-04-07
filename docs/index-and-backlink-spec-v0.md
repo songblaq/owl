@@ -5,7 +5,7 @@
 
 ## 1. 목적
 
-Karpathy 원문에서 강조한 index, summary, backlink, linking 구조를 Agent Brain 규칙으로 구체화한다.
+Karpathy 원문에서 강조한 index, summary, backlink, linking 구조를 owl 규칙으로 구체화한다.
 
 ---
 

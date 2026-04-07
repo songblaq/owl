@@ -43,9 +43,9 @@ CLI First는 모든 작업을 CLI로 대체하자는 뜻이 아니다.
 4. LLM-only를 억지로 CLI라고 주장하지 않는다.
 5. 반복 작업은 Feature CLI / Job CLI / Workflow CLI / Adapter CLI 승격 후보로 기록한다.
 
-## Agent Brain 편입 메모
+## owl 편입 메모
 
-이 문서는 Agent Brain에서 `Operating Principle` 및 `Rule Source` 계열 compiled summary로 취급할 수 있다.
+이 문서는 owl에서 `Operating Principle` 및 `Rule Source` 계열 compiled summary로 취급할 수 있다.
 
 권장 연결 대상:
 - `docs/term-dictionary-v0.md`

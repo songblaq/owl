@@ -138,7 +138,7 @@ curl -fsSL https://raw.githubusercontent.com/<owner>/owl/main/install.sh | sh
 ```
 
 `install.sh` 는:
-1. git clone (또는 pull) → `~/_/projects/agent-brain`
+1. git clone (또는 pull) → `~/_/projects/owl`
 2. `pipx install --editable .` → `~/.local/bin/owl`
 3. `owl setup` 실행 (interactive TUI)
    - 환경 진단

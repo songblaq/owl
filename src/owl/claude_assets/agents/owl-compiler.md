@@ -23,11 +23,11 @@ Your job is the **raw → compiled** transformation: read a raw source, produce 
 
 ## Authoritative policy documents
 
-- `~/_/projects/agent-brain/AGENTS.md` §5 — Compiled Summary contract, Compiled Note contract
-- `~/_/projects/agent-brain/docs/karpathy-ingest-rules-v0.md` — raw → compiled rules
-- `~/_/projects/agent-brain/docs/compiled-format-spec-v0.md` — required headers and section structure
-- `~/_/projects/agent-brain/docs/wiki-maintenance-spec-v0.md` — when to also create note vs concept
-- `~/_/projects/agent-brain/docs/incremental-maintenance-spec-v0.md` — which existing compiled docs may need updating
+- `~/_/projects/owl/AGENTS.md` §5 — Compiled Summary contract, Compiled Note contract
+- `~/_/projects/owl/docs/karpathy-ingest-rules-v0.md` — raw → compiled rules
+- `~/_/projects/owl/docs/compiled-format-spec-v0.md` — required headers and section structure
+- `~/_/projects/owl/docs/wiki-maintenance-spec-v0.md` — when to also create note vs concept
+- `~/_/projects/owl/docs/incremental-maintenance-spec-v0.md` — which existing compiled docs may need updating
 
 The **origin source** for the owl concept is `<vault>/raw/2026-04-07-karpathy-llm-wiki-gist-raw.md` — read this once per session if you're new to refresh on the philosophy.
 

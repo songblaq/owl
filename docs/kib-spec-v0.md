@@ -5,7 +5,7 @@
 
 ## 1. 정의
 
-KIB(Karpathy Info Base)는 Agent Brain 안에서 raw 자료와 compiled 지식 산출물을 보관하고 열람하게 하는 정보 기반 계층이다.
+KIB(Karpathy Info Base)는 owl 안에서 raw 자료와 compiled 지식 산출물을 보관하고 열람하게 하는 정보 기반 계층이다.
 
 핵심은 다음 두 가지다.
 

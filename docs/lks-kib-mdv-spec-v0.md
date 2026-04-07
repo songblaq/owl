@@ -5,8 +5,8 @@
 
 ## 1. 상위 개념
 
-### Agent Brain
-Agent Brain은 프로젝트명이며, 전체 LLM Knowledge System(LKS)을 가리키는 상위 이름이다.
+### owl
+owl은 프로젝트명이며, 전체 LLM Knowledge System(LKS)을 가리키는 상위 이름이다.
 
 ### LKS
 LLM Knowledge System.
@@ -69,10 +69,10 @@ LLM Knowledge System.
 ## 4. 기본 디렉토리 정책
 
 ### 프로젝트 경로
-- `~/_/projects/agent-brain`
+- `~/_/projects/owl`
 
 ### 앱 데이터 경로
-- `~/.agents/brain`
+- `~/owl-vault`
 
 ### 앱 데이터 하위 폴더
 - `raw/`

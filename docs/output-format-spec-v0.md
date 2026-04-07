@@ -5,7 +5,7 @@
 
 ## 1. 목적
 
-Karpathy 원문에서 말한 markdown, slides, images 같은 출력 형식을 Agent Brain 산출물 규칙으로 정리한다.
+Karpathy 원문에서 말한 markdown, slides, images 같은 출력 형식을 owl 산출물 규칙으로 정리한다.
 
 ---
 

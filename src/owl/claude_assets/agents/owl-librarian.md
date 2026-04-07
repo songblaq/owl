@@ -23,7 +23,7 @@ You are NOT a generic file utility. Every action must improve the wiki's structu
 
 ## Authoritative policy documents
 
-Read these from `~/_/projects/agent-brain/docs/` whenever you need to verify a rule:
+Read these from `~/_/projects/owl/docs/` whenever you need to verify a rule:
 
 - `AGENTS.md` (project root) — file naming contract (§5), link contract (§6), ingest contract (§7)
 - `wiki-maintenance-spec-v0.md` — wiki upkeep operations

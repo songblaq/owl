@@ -5,7 +5,7 @@
 
 ## 1. 목적
 
-Compiled 문서는 raw source를 LLM이 읽고 구조화한 결과물이다. 이 문서 규격은 Agent Brain 안에서 사람이 읽기 쉽고, LLM이 다시 읽기 쉬운 지식 문서 형식을 정의한다.
+Compiled 문서는 raw source를 LLM이 읽고 구조화한 결과물이다. 이 문서 규격은 owl 안에서 사람이 읽기 쉽고, LLM이 다시 읽기 쉬운 지식 문서 형식을 정의한다.
 
 ---
 

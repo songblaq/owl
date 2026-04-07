@@ -5,7 +5,7 @@
 
 ## 1. 목적
 
-Karpathy 원문에서 언급된 Obsidian 기반 수집 방식을 Agent Brain 규칙으로 정리한다.
+Karpathy 원문에서 언급된 Obsidian 기반 수집 방식을 owl 규칙으로 정리한다.
 
 ---
 

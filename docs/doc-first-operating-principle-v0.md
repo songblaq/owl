@@ -5,7 +5,7 @@
 
 ## 목적
 
-Doc First 운영 원칙을 Agent Brain 관점에서 정의한다.
+Doc First 운영 원칙을 owl 관점에서 정의한다.
 이 원칙은 단순히 문서를 많이 남기자는 뜻이 아니라, 중요한 판단·설계·작업·실행·결과를 문서 객체로 다루고 그 문서를 운영 계약과 증적으로 사용하는 방식이다.
 
 ## 핵심 정의
@@ -115,9 +115,9 @@ Doc First와 Agent CLI First는 경쟁 관계가 아니다.
 따라서 CLI First는 Doc First 위에서 더 강하게 작동한다.
 문서 없는 CLI 승격은 맥락 손실을 낳기 쉽고, 문서만 있고 실행 계약이 없으면 반복성이 약하다.
 
-## Agent Brain 편입 메모
+## owl 편입 메모
 
-Agent Brain 기준으로 보면 Doc First는 다음에 연결된다.
+owl 기준으로 보면 Doc First는 다음에 연결된다.
 
 - `docs/agent-cli-operating-principle-summary-v0.md`
 - `docs/term-dictionary-v0.md`

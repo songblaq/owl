@@ -65,7 +65,7 @@ CLI 계약화 → 실행 → 결과 문서화 (Doc First로 귀환)
 승격 → 장기 지식 또는 CLI 개선
 ```
 
-## Agent Brain 편입
+## owl 편입
 - 이 문서는 `Operating Principle` 핵심
 - 연결: `docs/doc-first-operating-principle-v0.md`, `docs/agent-cli-operating-principle-summary-v0.md`
 - 인덱스: `docs/operating-principles-index-v0.md`

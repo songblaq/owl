@@ -118,6 +118,12 @@
       "type": "file"
     },
     {
+      "path": "docs/karpathy-ingest-rules-v0.md",
+      "accessCount": 5,
+      "lastAccessed": 1775575343651,
+      "type": "file"
+    },
+    {
       "path": "src/agent_brain/initcmd.py",
       "accessCount": 4,
       "lastAccessed": 1775529820504,
@@ -133,6 +139,24 @@
       "path": "pyproject.toml",
       "accessCount": 4,
       "lastAccessed": 1775574699498,
+      "type": "file"
+    },
+    {
+      "path": "docs/folder-policy-v0.md",
+      "accessCount": 4,
+      "lastAccessed": 1775575175375,
+      "type": "file"
+    },
+    {
+      "path": "docs/lks-kib-mdv-spec-v0.md",
+      "accessCount": 4,
+      "lastAccessed": 1775575340950,
+      "type": "file"
+    },
+    {
+      "path": "docs/openclaw-reflection-log-v0.md",
+      "accessCount": 4,
+      "lastAccessed": 1775575342917,
       "type": "file"
     },
     {
@@ -208,18 +232,6 @@
       "type": "file"
     },
     {
-      "path": "docs/lks-kib-mdv-spec-v0.md",
-      "accessCount": 1,
-      "lastAccessed": 1775523624944,
-      "type": "file"
-    },
-    {
-      "path": "docs/openclaw-reflection-log-v0.md",
-      "accessCount": 1,
-      "lastAccessed": 1775524105747,
-      "type": "file"
-    },
-    {
       "path": "docs/compiled-format-spec-v0.md",
       "accessCount": 1,
       "lastAccessed": 1775524130546,
@@ -247,18 +259,6 @@
       "path": "docs/query-orchestration-spec-v0.md",
       "accessCount": 1,
       "lastAccessed": 1775524449755,
-      "type": "file"
-    },
-    {
-      "path": "docs/folder-policy-v0.md",
-      "accessCount": 1,
-      "lastAccessed": 1775524450090,
-      "type": "file"
-    },
-    {
-      "path": "docs/karpathy-ingest-rules-v0.md",
-      "accessCount": 1,
-      "lastAccessed": 1775524465038,
       "type": "file"
     },
     {

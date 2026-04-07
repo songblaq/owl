@@ -5,7 +5,7 @@
 
 ## 1. 목적
 
-Karpathy 원문에서 말한 "small scale 에서는 fancy RAG 없이도 잘 작동한다"는 감각을 Agent Brain 초기 운영 정책으로 정리한다.
+Karpathy 원문에서 말한 "small scale 에서는 fancy RAG 없이도 잘 작동한다"는 감각을 owl 초기 운영 정책으로 정리한다.
 
 ---
 

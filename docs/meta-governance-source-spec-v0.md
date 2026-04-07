@@ -5,14 +5,14 @@
 
 ## 1. 목적
 
-Agent Brain 자체의 설계, 규칙, 운영 원칙을 다루는 메타 운영 대화나 문서를 어떤 source 로 취급할지 정의한다.
+owl 자체의 설계, 규칙, 운영 원칙을 다루는 메타 운영 대화나 문서를 어떤 source 로 취급할지 정의한다.
 
 ## 2. 정의
 
 Meta Governance Source 는 브레인 자체를 어떻게 설계하고 유지할지에 대한 결정을 담은 source 다.
 
 예:
-- Agent Brain 설계 스레드
+- owl 설계 스레드
 - 운영 원칙 점검 대화
 - 규칙/메모리/정체성 반영 결정
 - channel/session ingest 정책 논의

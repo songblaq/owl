@@ -5,13 +5,13 @@
 
 ## 1. 목적
 
-Karpathy 원문에서 말하는 incremental compile / incremental maintenance 개념을 Agent Brain 운영 규칙으로 정리한다.
+Karpathy 원문에서 말하는 incremental compile / incremental maintenance 개념을 owl 운영 규칙으로 정리한다.
 
 ---
 
 ## 2. 정의
 
-Agent Brain의 compiled wiki는 한 번 만들고 끝나는 정적 산출물이 아니라, raw source 추가와 질의응답, health check, filing loop에 따라 계속 갱신되는 지식 구조다.
+owl의 compiled wiki는 한 번 만들고 끝나는 정적 산출물이 아니라, raw source 추가와 질의응답, health check, filing loop에 따라 계속 갱신되는 지식 구조다.
 
 ---
 
@@ -43,4 +43,4 @@ Agent Brain의 compiled wiki는 한 번 만들고 끝나는 정적 산출물이 
 
 ## 5. 운영 효과
 
-이 규칙을 통해 Agent Brain은 단발성 요약 저장소가 아니라, 점진적으로 정리 수준이 높아지는 운영형 지식 베이스가 된다.
+이 규칙을 통해 owl은 단발성 요약 저장소가 아니라, 점진적으로 정리 수준이 높아지는 운영형 지식 베이스가 된다.
