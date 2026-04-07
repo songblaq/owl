@@ -154,51 +154,184 @@ Next steps (131 issues):
   Use `owl health --json` for structured input to subagents.
 ```
 
-### 2.4 `owl init / setup / use`
+### 2.4 `owl init [path] [--hooks]`
 
-이 셋은 *사람의 환경 setup* 명령이라 LLM 이 직접 호출하는 경우는 드물다. 다만:
-- LLM 이 `owl status` 결과 보고 vault state 가 ✗ 면 → 사용자에게 `owl init` 권유 (LLM 이 직접 실행하지 않음)
-- 새 vault 로 전환은 사용자 명시적 의도가 있을 때만
+**역할**: vault 디렉토리에 owl 표식과 Claude Code 통합을 박는 setup 명령. 사람이 주로 호출하지만 LLM 도 사용자에게 권유 + (사용자 동의시) 실행 가능.
 
-### 2.5 `owl ingest <file>`
-
-**역할**: deterministic primitive. raw 파일을 vault/raw/ 로 옮기고 파일명 계약 적용. *압축/요약/cross-reference 는 안 함* — 그건 LLM 이 follow up.
-
-**LLM follow-up 패턴**:
-1. `owl ingest <file>` 호출
-2. 결과 path 받음 (vault/raw/2026-04-08-<slug>-raw.md)
-3. `/owl-ingest <path>` 슬래시 명령 호출 OR owl-compiler 서브에이전트에 위임
-4. compiled summary 생성 → cross-reference 추가 → existing index 갱신
-
-이 분리가 *CLI = primitive, LLM = composer* 패턴의 정확한 예.
-
-### 2.6 `owl compile <raw-path>`
-
-**역할**: raw 파일에 대한 *compile metadata* 만 print. 실제 compile 결과 markdown 은 LLM (owl-compiler) 가 생성.
-
-**출력 예**:
+**출력 (text)**:
 ```
-raw_file: <path>
-expected_compiled: <expected path>
-title: <inferred>
-date: <YYYY-MM-DD>
-slug: <derived>
-suggested_kinds: [summary, note]
-related_existing: [list of existing compiled files about same topic]
+owl — vault initialization
+==========================
+Vault subdirs already in place ✓
+Wrote owl-vault/.owl-vault ✓
+Wrote owl-vault/CLAUDE.md ✓
+Wrote owl-vault/.claude/settings.json ✓ (5 hooks)
+Wrote owl-vault/.claude/commands/ ✓ (7 slash commands)
+Set /Users/lucablaq/owl-vault as active vault ✓
+
+Done. Next steps (for humans and LLM agents):
+  cd <vault>
+  claude
+  owl status
+
+  LLM agents: this vault now has /owl-* slash commands and SessionStart
+  hooks installed. New Claude Code sessions in this directory will auto-
+  load the wiki context. Use owl-{librarian,compiler,health} subagents
+  for filing / compilation / health-check work.
 ```
 
 **LLM 해석 패턴**:
-- `related_existing` 가 비어있지 않으면 → "기존 문서 갱신 vs 새 문서 생성 결정"
-- `suggested_kinds` 의 순서 = priority. 보통 summary 먼저
-- compile 자체는 LLM 의 책임. CLI 는 metadata 만 제공
+| Signal | Action |
+|---|---|
+| `owl status` 가 marker / CLAUDE.md / hooks 중 ✗ | 사용자에게 `owl init [--hooks]` 권유 |
+| 사용자 명시 동의 후 | Bash 도구로 실행 가능 |
+| init 실패 (vault 가 file 임 등) | 에러 보고, 직접 fix 안 함 |
 
-### 2.7 `owl file <path> <kind>`
+**Next-step hint** (위 출력 끝에 자동 표시): cd / claude / owl status + LLM 가족 안내
+
+### 2.5 `owl setup [--non-interactive]`
+
+**역할**: 환경 진단 + ~/.claude/agents/owl-* 심링크 설치 + ~/.owl/installed-at stamp. install.sh 가 자동 호출.
+
+**출력 (text)**:
+```
+owl — setup
+===========
+
+1) Environment diagnostic
+  Python:       3.14.3
+    ✓
+  owl CLI:      /Users/lucablaq/.local/bin/owl
+    ✓
+  version:      0.1.0
+
+2) Vault discovery
+  Found existing vault(s):
+    - /Users/lucablaq/owl-vault
+
+3) User-global subagent symlinks
+Symlinking subagents to ~/.claude/agents/ ...
+  - owl-librarian: → ...
+  - owl-compiler: → ...
+  - owl-health: → ...
+
+4) Marking setup complete
+  ✓ stamped /Users/lucablaq/.owl/installed-at
+
+Setup complete. Next steps (for humans and LLM agents):
+  owl status
+  owl search 'filing loop'
+  owl health
+```
+
+**LLM 해석 패턴**:
+| Signal | Action |
+|---|---|
+| `Environment diagnostic` 에서 `owl CLI: NOT FOUND` | 사용자에게 PATH 추가 가이드 |
+| `Vault discovery` 에서 결과 0 | `owl init <path>` 권유 |
+| `4) Marking setup complete` 가 안 보임 | 실패. 사용자 보고 |
+| 정상 종료 | Task tool 로 owl-* 서브에이전트 즉시 사용 가능 |
+
+### 2.6 `owl use <vault-path>`
+
+**역할**: active vault 를 즉시 전환. `~/.owl/active-vault` 갱신.
+
+**출력 (text)**:
+```
+Active vault set to: /path/to/new/vault
+
+Next steps (for humans and LLM agents):
+  owl status   # confirm the new vault is recognized
+  cd <vault>   # start a Claude Code session in the new vault
+```
+
+**LLM 해석 패턴**:
+| Signal | Action |
+|---|---|
+| Active vault 전환 후 | 즉시 `owl status` 로 새 vault 검증 권유 |
+| 같은 세션 안에서 vault 전환 | 이전 vault 의 컨텍스트 잊을 것 — 새 컨텍스트 로드 |
+
+### 2.7 `owl ingest <file>` (JSON 출력)
+
+**역할**: deterministic primitive. raw 파일을 vault/raw/ 로 옮기고 파일명 계약 적용. *압축/요약/cross-reference 는 안 함* — 그건 LLM 이 follow up.
+
+**출력 (JSON, 항상)**:
+```json
+{
+  "vault": "/Users/lucablaq/owl-vault",
+  "source": "/path/to/source.md",
+  "target": "raw/2026-04-08-<slug>-raw.md",
+  "target_absolute": "/Users/lucablaq/owl-vault/raw/2026-04-08-<slug>-raw.md",
+  "action": "moved",
+  "expected_summary": "compiled/2026-04-08-<slug>-summary.md",
+  "next_step": "Hand off to owl-librarian via /owl-ingest, or directly compile via /owl-compile <name>"
+}
+```
+
+**LLM follow-up 패턴** (필수 7-단계 절차):
+1. `owl ingest <file>` 호출 → JSON 받음
+2. `target_absolute` 로 raw 위치 확인
+3. `expected_summary` 확인 (이미 존재하면 duplicate 위험)
+4. `/owl-ingest <target>` 슬래시 명령 OR Task tool 로 owl-compiler 호출
+5. owl-compiler 가 raw 를 read → summary draft
+6. summary 에 `관련 항목:` cross-reference 추가
+7. existing index 갱신 (필요시)
+
+이 분리가 *CLI = primitive, LLM = composer* 패턴의 정확한 예. JSON 의 `next_step` field 는 *suggestion only* — 더 적절한 행동이 있으면 LLM 이 선택.
+
+### 2.8 `owl compile <raw-path>` (JSON 출력)
+
+**역할**: raw 파일에 대한 *compile metadata* 만 print. 실제 compile 결과 markdown 은 LLM (owl-compiler) 가 생성.
+
+**출력 (JSON, 항상)**:
+```json
+{
+  "vault": "/Users/lucablaq/owl-vault",
+  "raw": "raw/2026-04-08-<slug>-raw.md",
+  "raw_absolute": "...",
+  "date": "2026-04-08",
+  "slug": "<slug>",
+  "expected_summary": "compiled/2026-04-08-<slug>-summary.md",
+  "expected_note": "compiled/2026-04-08-<slug>-note.md",
+  "summary_exists": false,
+  "note_exists": false,
+  "next_step": "Hand off to owl-compiler subagent via /owl-compile..."
+}
+```
+
+**LLM 해석 패턴**:
+| Signal | Action |
+|---|---|
+| `summary_exists: true` | duplicate. 사용자에게 확인 (덮어쓸지 / skip 할지) |
+| `summary_exists: false`, `note_exists: false` | 정상 진행. owl-compiler 호출 |
+| `note_exists: true` only | summary 만 만들고 note 는 skip (또는 갱신) |
+
+**핵심 원칙**: compile 자체는 LLM 의 책임. CLI 는 metadata 만 제공. *raw 를 read 하지 않은 채로* compile 하면 안 됨.
+
+### 2.9 `owl file <path> <kind>` (JSON 출력)
 
 **역할**: output (slide/figure/visual) 를 vault/outputs/<kind>/ 로 이동. 단순 파일 이동.
 
-**LLM follow-up**:
-- 이동 후 → compiled wiki 에 reference 추가 (filing loop)
-- 이게 Karpathy 가 강조한 "outputs return to wiki" 의 구체 구현
+**출력 (JSON, 항상)**:
+```json
+{
+  "vault": "/Users/lucablaq/owl-vault",
+  "source": "/path/to/output.png",
+  "target": "outputs/figures/output.png",
+  "target_absolute": "...",
+  "kind": "figures",
+  "next_step": "Hand off to owl-librarian via /owl-file to add a link from the relevant compiled/*-report.md (closing the filing loop)."
+}
+```
+
+**LLM follow-up 패턴**:
+1. `owl file <path> <kind>` 호출 → JSON
+2. `target` 의 vault-relative path 확보
+3. 어떤 report (compiled/*-report.md) 가 이 output 을 referencing 해야 하는지 결정 (sometimes 사용자에게 물음)
+4. 그 report 를 Read+Edit 해서 link 추가
+5. `owl health` 재실행 → `report-broken-output-link` 가 줄어들었는지 확인
+
+이게 Karpathy 가 강조한 *"outputs return to wiki"* (filing loop) 의 구체 구현.
 
 ### 2.8 `owl hook <name>`
 

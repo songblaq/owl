@@ -161,8 +161,12 @@ def setup(interactive: bool = True) -> int:
     mark_setup_completed()
     print(f"  ✓ stamped {USER_CONFIG_DIR}/installed-at")
 
-    print("\nSetup complete. Try:")
-    print("  owl status")
-    print("  owl search 'filing loop'")
-    print("  owl health")
+    print("\nSetup complete. Next steps (for humans and LLM agents):")
+    print("  owl status                # see vault state, version, and health summary")
+    print("  owl search 'filing loop'  # search the wiki without RAG")
+    print("  owl health                # run vault integrity checks (8 rules)")
+    print()
+    print("  LLM agents: subagent symlinks at ~/.claude/agents/owl-* are now live.")
+    print("  Use Task tool with owl-librarian / owl-compiler / owl-health for")
+    print("  filing, compile, and health work in any Claude Code session.")
     return 0

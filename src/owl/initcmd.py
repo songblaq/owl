@@ -251,8 +251,13 @@ def init_vault(
         set_active_vault(vault)
         print(f"\nSet {vault} as active vault ✓")
 
-    print("\nDone. Next steps:")
+    print("\nDone. Next steps (for humans and LLM agents):")
     print(f"  cd {vault}")
     print(f"  claude   # start a Claude Code session here")
-    print(f"  owl status   # confirm everything is wired up")
+    print(f"  owl status   # confirm vault marker / CLAUDE.md / hooks are all ✓")
+    print()
+    print("  LLM agents: this vault now has /owl-* slash commands and SessionStart")
+    print("  hooks installed. New Claude Code sessions in this directory will auto-")
+    print("  load the wiki context. Use owl-{librarian,compiler,health} subagents")
+    print("  for filing / compilation / health-check work.")
     return 0

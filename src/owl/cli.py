@@ -178,6 +178,10 @@ def _run_use(args: argparse.Namespace) -> int:
         return 2
     set_active_vault(target)
     print(f"Active vault set to: {target}")
+    print()
+    print("Next steps (for humans and LLM agents):")
+    print(f"  owl status   # confirm the new vault is recognized")
+    print(f"  cd {target}  # start a Claude Code session in the new vault")
     return 0
 
 
