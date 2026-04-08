@@ -82,15 +82,15 @@
   },
   "hotPaths": [
     {
-      "path": "README.md",
-      "accessCount": 19,
-      "lastAccessed": 1775578085250,
+      "path": "docs/compiled-format-spec-v0.md",
+      "accessCount": 24,
+      "lastAccessed": 1775627830973,
       "type": "file"
     },
     {
-      "path": "docs/compiled-format-spec-v0.md",
+      "path": "README.md",
       "accessCount": 19,
-      "lastAccessed": 1775627548582,
+      "lastAccessed": 1775578085250,
       "type": "file"
     },
     {
