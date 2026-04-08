@@ -16,6 +16,24 @@
 ## 2. 앱 데이터 폴더
 - `~/owl-vault`
 
+### External reference subtrees (예외)
+
+`raw/` 하위에는 owl 의 `YYYY-MM-DD-<slug>-raw.md` 파일명 계약을 따르지 않는 **external reference subtree** 가 존재할 수 있다. 이들은 다른 시스템에서 import 된 self-contained knowledge pack 으로, 자체 내부 구조 (manifest, indexes, pages 등) 를 유지한다.
+
+현재 등록된 external reference subtrees:
+
+- **`raw/atlas/`** — ARIA 의 "Constella System Knowledge Pack". `compiled/atlas-external-reference-index.md` 참조.
+
+이 subtree 들은:
+- `owl health` 의 `missing-summary-for-raw` 등 raw-based 룰에서 자동 제외됨 (`src/owl/health.py` 의 `EXTERNAL_REFERENCE_SUBTREES` 상수)
+- 개별 `compiled/*-summary.md` 대신 **하나의 reference index doc** (`compiled/<name>-external-reference-index.md`) 로 wiki 에 진입점 제공
+- 원본 구조 무변경 (raw 불변 원칙 유지)
+
+새 external reference subtree 를 import 하면:
+1. `EXTERNAL_REFERENCE_SUBTREES` 에 추가
+2. `compiled/<name>-external-reference-index.md` 작성
+3. 이 섹션 (folder-policy) 에 등록
+
 ### 하위 폴더 의미
 - `inbox/`: 아직 분류되지 않은 수집 대기 자료
 - `raw/`: 원본 자료 보관

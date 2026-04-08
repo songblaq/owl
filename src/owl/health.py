@@ -45,6 +45,12 @@ BRAIN_LINK_RE = re.compile(r"(?:compiled|raw|outputs|views|research)/[^`\s)]*\.[
 # Required headers for compiled/*.md per compiled-format-spec-v0.md §3
 REQUIRED_HEADERS = ("상태:", "유형:", "출처:", "작성일:", "관련 항목:")
 
+# Subtrees under raw/ that are self-contained external reference packs,
+# NOT owl-format raw sources to be compiled into summaries. Excluded from
+# rules like missing-summary-for-raw. See compiled/atlas-external-reference-index.md
+# for the atlas case. Add new subtrees here as they're imported.
+EXTERNAL_REFERENCE_SUBTREES = frozenset({"atlas"})
+
 # Code block patterns for strip_code_blocks().
 # - Fenced: ``` ... ``` (language tag allowed, non-greedy, DOTALL)
 # - Inline: `...` (no embedded backtick)
@@ -94,10 +100,25 @@ def compiled_files(base: Path) -> List[Path]:
 
 
 def raw_files(base: Path) -> List[Path]:
+    """Return sorted list of raw/*.md files, excluding external reference subtrees.
+
+    External reference subtrees (see EXTERNAL_REFERENCE_SUBTREES) are self-
+    contained knowledge packs imported from other systems. They maintain
+    their own internal structure and are NOT subject to owl's raw→compiled
+    contract. They're skipped from all raw-based health rules.
+    """
     root = base / "raw"
     if not root.exists():
         return []
-    return sorted([p for p in root.rglob("*.md") if p.is_file()])
+    results: List[Path] = []
+    for p in root.rglob("*.md"):
+        if not p.is_file():
+            continue
+        rel = p.relative_to(root)
+        if rel.parts and rel.parts[0] in EXTERNAL_REFERENCE_SUBTREES:
+            continue
+        results.append(p)
+    return sorted(results)
 
 
 def has_related_header(content: str) -> bool:
