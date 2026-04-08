@@ -88,6 +88,12 @@
       "type": "file"
     },
     {
+      "path": "docs/compiled-format-spec-v0.md",
+      "accessCount": 19,
+      "lastAccessed": 1775627548582,
+      "type": "file"
+    },
+    {
       "path": "AGENTS.md",
       "accessCount": 13,
       "lastAccessed": 1775572710207,
@@ -229,12 +235,6 @@
       "path": "src/agent_brain/hooks.py",
       "accessCount": 2,
       "lastAccessed": 1775529581069,
-      "type": "file"
-    },
-    {
-      "path": "docs/compiled-format-spec-v0.md",
-      "accessCount": 2,
-      "lastAccessed": 1775580659148,
       "type": "file"
     },
     {
