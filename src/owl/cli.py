@@ -71,6 +71,22 @@ def build_parser() -> argparse.ArgumentParser:
     # setup
     sp_setup = subparsers.add_parser("setup", help="Post-install setup: diagnose env, create symlinks, offer init.")
     sp_setup.add_argument("--non-interactive", action="store_true", help="Never prompt")
+    machine_group = sp_setup.add_mutually_exclusive_group()
+    machine_group.add_argument(
+        "--mark-primary",
+        action="store_true",
+        help="Label this machine as the primary/canonical vault host (writes ~/.owl/machine.json)",
+    )
+    machine_group.add_argument(
+        "--mark-mirror",
+        action="store_true",
+        help="Label this machine as a mirror (synced copy of primary vault)",
+    )
+    machine_group.add_argument(
+        "--mark-client",
+        action="store_true",
+        help="Label this machine as a client (queries primary, no local vault)",
+    )
 
     # use
     sp_use = subparsers.add_parser("use", help="Switch the active vault.")
@@ -164,7 +180,12 @@ def _run_init(args: argparse.Namespace) -> int:
 
 def _run_setup(args: argparse.Namespace) -> int:
     from owl.setupcmd import setup
-    return setup(interactive=not args.non_interactive)
+    return setup(
+        interactive=not args.non_interactive,
+        mark_primary=args.mark_primary,
+        mark_mirror=args.mark_mirror,
+        mark_client=args.mark_client,
+    )
 
 
 def _run_use(args: argparse.Namespace) -> int:

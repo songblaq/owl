@@ -115,15 +115,14 @@ def show_status(vault_arg: Optional[str] = None, json_out: bool = False) -> int:
     # Machine identity (useful for multi-machine deployments)
     if machine_info:
         role = machine_info.get("role", "?")
-        is_primary = machine_info.get("primary", False)
         recorded_host = machine_info.get("hostname", "?")
         current_host = current_machine["hostname"]
-        print(f"  machine:        {recorded_host} ({role}{' — primary' if is_primary else ''})")
+        print(f"  machine:        {recorded_host} ({role})")
         if recorded_host != current_host:
             print(f"    ⚠ current hostname is {current_host} but recorded is {recorded_host}")
             print(f"    ⚠ this machine may be a mirror/clone or ~/.owl/machine.json is stale")
     else:
-        print(f"  machine:        {current_machine['hostname']} (unmarked — run `owl setup --mark-primary` to label)")
+        print(f"  machine:        {current_machine['hostname']} (unmarked — run `owl setup --mark-primary|--mark-mirror|--mark-client`)")
 
     if not info["vault_exists"]:
         print(f"\n  ✗ vault directory does not exist: {vault}")
