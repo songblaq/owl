@@ -35,7 +35,7 @@ owl 의 본질은 *LLM 이 컴파일·관리·분석·환류* 하는 wiki 다. C
 owl status
 ==========
   version:        0.1.0
-  vault:          /Users/lucablaq/owl-vault
+  vault:          ~/owl-vault
     discovered via: active-vault config
   ...
 Vault state:
@@ -110,7 +110,7 @@ Next steps (count=10):
 **현재 출력 (사람용)**:
 ```
 owl Wiki Health Check
-vault: /Users/lucablaq/owl-vault
+vault: ~/owl-vault
 issues: 131
 
 [missing-summary-for-raw] count=84
@@ -167,7 +167,7 @@ Wrote owl-vault/.owl-vault ✓
 Wrote owl-vault/CLAUDE.md ✓
 Wrote owl-vault/.claude/settings.json ✓ (5 hooks)
 Wrote owl-vault/.claude/commands/ ✓ (7 slash commands)
-Set /Users/lucablaq/owl-vault as active vault ✓
+Set ~/owl-vault as active vault ✓
 
 Done. Next steps (for humans and LLM agents):
   cd <vault>
@@ -201,13 +201,13 @@ owl — setup
 1) Environment diagnostic
   Python:       3.14.3
     ✓
-  owl CLI:      /Users/lucablaq/.local/bin/owl
+  owl CLI:      ~/.local/bin/owl
     ✓
   version:      0.1.0
 
 2) Vault discovery
   Found existing vault(s):
-    - /Users/lucablaq/owl-vault
+    - ~/owl-vault
 
 3) User-global subagent symlinks
 Symlinking subagents to ~/.claude/agents/ ...
@@ -216,7 +216,7 @@ Symlinking subagents to ~/.claude/agents/ ...
   - owl-health: → ...
 
 4) Marking setup complete
-  ✓ stamped /Users/lucablaq/.owl/installed-at
+  ✓ stamped ~/.owl/installed-at
 
 Setup complete. Next steps (for humans and LLM agents):
   owl status
@@ -258,10 +258,10 @@ Next steps (for humans and LLM agents):
 **출력 (JSON, 항상)**:
 ```json
 {
-  "vault": "/Users/lucablaq/owl-vault",
+  "vault": "~/owl-vault",
   "source": "/path/to/source.md",
   "target": "raw/2026-04-08-<slug>-raw.md",
-  "target_absolute": "/Users/lucablaq/owl-vault/raw/2026-04-08-<slug>-raw.md",
+  "target_absolute": "~/owl-vault/raw/2026-04-08-<slug>-raw.md",
   "action": "moved",
   "expected_summary": "compiled/2026-04-08-<slug>-summary.md",
   "next_step": "Hand off to owl-librarian via /owl-ingest, or directly compile via /owl-compile <name>"
@@ -286,7 +286,7 @@ Next steps (for humans and LLM agents):
 **출력 (JSON, 항상)**:
 ```json
 {
-  "vault": "/Users/lucablaq/owl-vault",
+  "vault": "~/owl-vault",
   "raw": "raw/2026-04-08-<slug>-raw.md",
   "raw_absolute": "...",
   "date": "2026-04-08",
@@ -315,7 +315,7 @@ Next steps (for humans and LLM agents):
 **출력 (JSON, 항상)**:
 ```json
 {
-  "vault": "/Users/lucablaq/owl-vault",
+  "vault": "~/owl-vault",
   "source": "/path/to/output.png",
   "target": "outputs/figures/output.png",
   "target_absolute": "...",

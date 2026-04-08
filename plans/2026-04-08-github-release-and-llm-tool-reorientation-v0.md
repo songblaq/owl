@@ -40,7 +40,7 @@ Phase A 가 먼저 (인프라 안정화), Phase B 가 그 위에서 진행.
 
 **Checks**:
 - ✓ `.omc/project-memory.json` — OMC 메타데이터만, 민감 정보 0 (확인 완료)
-- ✓ git author = `Luca <songblaq@users.noreply.github.com>` — noreply, 안전
+- ✓ git author = `Luca <<owner>@users.noreply.github.com>` — noreply, 안전
 - ✓ gh CLI auth = `songblaq` — 진짜 GitHub 계정
 - 결정: **public** 가시성 (curl 설치 흐름의 본질이 공개 가능)
 

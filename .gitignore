@@ -12,14 +12,23 @@ venv/
 .DS_Store
 Thumbs.db
 
-# OMC runtime state (keep .omc/project-memory.json)
-.omc/state/
-.omc/sessions/
-.omc/logs/
-.omc/research/
-.omc/plans/
-.omc/notepad.md
-.omc/artifacts/
+# OMC runtime state — all ignored (rebuilds per session).
+# Historical note: project-memory.json was tracked in early commits and
+# contained local paths (projectRoot, hotPaths). It was removed from
+# tracking in phase P (security remediation). Commit history still has
+# the old content — use git-filter-repo if full history scrub is needed.
+.omc/
+
+# Defensive: vault data MUST NEVER be committed in the project repo.
+# The vault lives at ~/owl-vault (or $OWL_VAULT) as its own data layer.
+# If any of these paths appear at the project repo root, they are almost
+# certainly misplaced vault content.
+/raw/
+/compiled/
+/views/
+/outputs/
+/inbox/
+/research/
 
 # Editor noise
 .vscode/

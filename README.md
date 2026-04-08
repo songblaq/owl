@@ -20,6 +20,8 @@ descended from Vannevar Bush's Memex (1945).
 
 owl is the Karpathy pattern made executable: a CLI, a set of Claude Code hooks, slash commands, and `owl-*` subagents that turn raw markdown sources into a self-maintaining wiki.
 
+> **Privacy note**: owl is designed to hold a *personal* wiki. Your vault (`~/owl-vault` by default) contains your sources, notes, and compiled knowledge — possibly including private material (chat logs, personal journals, work-internal docs). **Never commit your vault to a public repository.** The owl project repo and your owl vault are separate layers by design: the project repo contains *code + policy*, the vault contains *your data*. See `docs/source-ingest-policy-v0.md §6` for the vault-local-only rule for personal chat sources.
+
 ## Quick Install
 
 ```bash

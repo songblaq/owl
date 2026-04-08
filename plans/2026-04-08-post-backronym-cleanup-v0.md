@@ -43,7 +43,7 @@
 
 **결정**: 인라인 `-c user.name=... -c user.email=...` 사용 (글로벌 config 안 만짐).
 - name: `Luca` (pyproject.toml 의 authors 와 일치)
-- email: `songblaq@users.noreply.github.com` (GitHub 표준 noreply)
+- email: `<owner>@users.noreply.github.com` (GitHub 표준 noreply)
 
 다른 값 원하시면 step 1 시작 전 알려주시면 변경.
 
@@ -78,7 +78,7 @@
    - `.omc/project-memory.json` 은 keep (의도된 메모리)
 2. `.gitignore` 자체를 stage
 3. `git add` 로 모든 파일 stage (already-staged + untracked)
-4. `git -c user.name="Luca" -c user.email="songblaq@users.noreply.github.com" commit -m "..."`
+4. `git -c user.name="Luca" -c user.email="<owner>@users.noreply.github.com" commit -m "..."`
 5. commit 메시지:
    ```
    initial owl project import after brain → owl rename
@@ -207,7 +207,7 @@
 1. `git status` 로 변경된 파일 확인
 2. `git diff --stat` 로 변경 규모 확인
 3. `git add` 로 stage
-4. `git -c user.name="Luca" -c user.email="songblaq@users.noreply.github.com" commit -m "..."`
+4. `git -c user.name="Luca" -c user.email="<owner>@users.noreply.github.com" commit -m "..."`
 5. commit 메시지:
    ```
    post-rename cleanup: install.sh, vault init, docs stale refs

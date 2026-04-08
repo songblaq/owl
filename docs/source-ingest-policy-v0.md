@@ -71,3 +71,27 @@
 6. summary/note 생성
 7. index/concept 연결 여부 점검
 8. 필요한 경우 한 줄 filing 명령 흐름으로 승격
+
+---
+
+## 6. 프라이버시 — 개인 대화방 / 채널 소스 (2026-04-08 추가)
+
+**개인 대화방 (카카오톡, Discord 개인 채널, 개인 메신저 로그 등) 소스는 vault 안에서만 보관한다. 공개 repo (GitHub 등) 에 올리지 않는다.**
+
+### 이유
+
+- owl 은 개인 LLM-maintained wiki — 개인 지식이 raw/ 와 compiled/ 에 축적됨
+- 대화 로그에는 제3자 발언, 개인 정보, 민감 맥락이 섞일 수 있음
+- vault 자체를 GitHub 에 올리는 것은 금지 (owl 프로젝트 repo 와 vault 는 분리된 계층)
+
+### How to enforce
+
+- **vault 는 git repo 가 아니어야** — owl-vault 안에 `.git/` 없음을 확인
+- **프로젝트 repo 의 `.gitignore`** 가 `/raw/`, `/compiled/`, `/views/`, `/outputs/`, `/inbox/`, `/research/` 를 root level 에서 차단 (방어층)
+- **새 source 를 ingest 하기 전** 판단: 공개 가능한 자료인가? 판단 어려우면 vault-local 유지
+- **compile 결과** 에서도 제3자 발언/이름/PII 를 최소화. 필요시 편집 후 compiled 로
+
+### 예외
+
+- 이미 공개된 자료 (Karpathy gist, 공개 문서, published 블로그 글 등) 는 vault 에 넣는 것 OK
+- 프로젝트 docs/ 안의 ingest 계획 (예: `docs/sample-ingest-candidates-v0.md`) 은 *계획* 만 담고 *본문* 을 안 담으면 OK
