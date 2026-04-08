@@ -6,7 +6,12 @@
 # spiritually descended from Vannevar Bush's Memex (1945).
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/songblaq/owl/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/songblaq/owl/main/install.sh | bash
+#
+# NOTE: Pipe to `bash` (not `sh`). On systems where /bin/sh is dash
+# (e.g., Debian/Ubuntu/WSL), piping to `sh` fails because dash doesn't
+# support `set -o pipefail`. We re-exec under bash below as a safety net,
+# but using `| bash` is the correct invocation.
 #
 # What it does:
 #   1. Clones (or updates) the project repo to ~/_/projects/owl
@@ -20,7 +25,30 @@
 #
 # Re-runnable. Idempotent. Never modifies vault data.
 
-set -euo pipefail
+# Ensure we're running under bash. When invoked via `curl | sh` on a
+# system where /bin/sh is dash (Debian/Ubuntu/WSL), `set -o pipefail`
+# below would fail. Fall back to POSIX-safe mode in that case, OR
+# re-exec under bash if available.
+if [ -z "${BASH_VERSION:-}" ]; then
+    # Not running under bash. Try to re-exec.
+    if command -v bash >/dev/null 2>&1; then
+        # Re-exec this script's content under bash. For `curl | sh` we
+        # need to re-read stdin; for `bash install.sh` $0 works.
+        if [ -f "$0" ] && [ "$0" != "sh" ] && [ "$0" != "-sh" ] && [ "$0" != "dash" ]; then
+            exec bash "$0" "$@"
+        fi
+        # Piped-stdin case: we can't re-exec from a stream easily,
+        # so we fall back to POSIX-compatible mode without pipefail.
+        # The script is simple enough that pipefail isn't critical.
+        set -eu
+    else
+        # No bash available — run with POSIX-safe flags and hope.
+        set -eu
+    fi
+else
+    # Under bash: use the full strict mode.
+    set -euo pipefail
+fi
 
 REPO_DIR="${OWL_REPO:-${AGENT_BRAIN_REPO:-$HOME/_/projects/owl}}"
 REPO_URL="${OWL_REPO_URL:-${AGENT_BRAIN_REPO_URL:-https://github.com/songblaq/owl.git}}"

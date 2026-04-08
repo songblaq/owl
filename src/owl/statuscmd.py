@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Optional
 
 from owl import __version__
-from owl.config import get_active_vault, get_setup_timestamp
+from owl.config import detect_machine, get_active_vault, get_machine_info, get_setup_timestamp
 from owl.health import run_health_check
 from owl.vault import MARKER_FILE, discover_vault, discovery_source
 
@@ -54,6 +54,9 @@ def show_status(vault_arg: Optional[str] = None, json_out: bool = False) -> int:
     active = get_active_vault()
     setup_at = get_setup_timestamp()
 
+    machine_info = get_machine_info()
+    current_machine = detect_machine()
+
     info = {
         "version": __version__,
         "vault": str(vault),
@@ -64,6 +67,10 @@ def show_status(vault_arg: Optional[str] = None, json_out: bool = False) -> int:
         "marker_present": (vault / MARKER_FILE).exists() if vault.exists() else False,
         "claude_md_present": (vault / "CLAUDE.md").exists() if vault.exists() else False,
         "hooks_installed": _hooks_installed(vault) if vault.exists() else False,
+        "machine": {
+            "current": current_machine,
+            "recorded": machine_info,
+        },
         "counts": {},
         "health": None,
     }
@@ -104,6 +111,19 @@ def show_status(vault_arg: Optional[str] = None, json_out: bool = False) -> int:
         print(f"  setup at:       {setup_at}")
     else:
         print(f"  setup at:       (never — run `owl setup`)")
+
+    # Machine identity (useful for multi-machine deployments)
+    if machine_info:
+        role = machine_info.get("role", "?")
+        is_primary = machine_info.get("primary", False)
+        recorded_host = machine_info.get("hostname", "?")
+        current_host = current_machine["hostname"]
+        print(f"  machine:        {recorded_host} ({role}{' — primary' if is_primary else ''})")
+        if recorded_host != current_host:
+            print(f"    ⚠ current hostname is {current_host} but recorded is {recorded_host}")
+            print(f"    ⚠ this machine may be a mirror/clone or ~/.owl/machine.json is stale")
+    else:
+        print(f"  machine:        {current_machine['hostname']} (unmarked — run `owl setup --mark-primary` to label)")
 
     if not info["vault_exists"]:
         print(f"\n  ✗ vault directory does not exist: {vault}")

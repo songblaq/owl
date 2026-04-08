@@ -25,7 +25,9 @@ from owl.config import (
     USER_CONFIG_DIR,
     ensure_config_dir,
     get_active_vault,
+    get_machine_info,
     mark_setup_completed,
+    set_machine_info,
 )
 from owl.initcmd import _prompt_yes_no, init_vault
 from owl.vault import DEFAULT_VAULT
@@ -157,8 +159,22 @@ def install_global_slash_commands() -> List[str]:
     return msgs
 
 
-def setup(interactive: bool = True) -> int:
-    """Run the full setup flow."""
+def setup(
+    interactive: bool = True,
+    mark_primary: bool = False,
+    mark_mirror: bool = False,
+    mark_client: bool = False,
+) -> int:
+    """Run the full setup flow.
+
+    Optional machine-identity flags (for multi-machine deployments):
+        mark_primary: label this machine as the primary/canonical vault host
+        mark_mirror: label this machine as a mirror (synced copy of primary vault)
+        mark_client: label this machine as a client (queries primary, no local vault)
+
+    Only one of the three should be true. If none, machine.json is left unchanged.
+    See docs/multi-machine-setup-v0.md.
+    """
     print("owl — setup")
     print("===========\n")
 
@@ -204,7 +220,29 @@ def setup(interactive: bool = True) -> int:
     for line in install_global_slash_commands():
         print(line)
 
-    print("\n5) Marking setup complete")
+    # Optional machine identity marking (multi-machine deployments)
+    roles_requested = sum([mark_primary, mark_mirror, mark_client])
+    if roles_requested > 1:
+        print("\n  ✗ pass only one of --mark-primary / --mark-mirror / --mark-client", file=sys.stderr)
+        return 2
+    if roles_requested == 1:
+        print("\n5) Machine identity")
+        if mark_primary:
+            role, is_primary = "primary", True
+        elif mark_mirror:
+            role, is_primary = "mirror", False
+        else:
+            role, is_primary = "client", False
+        from owl.vault import discover_vault
+        vault_path = discover_vault(None) if (mark_primary or mark_mirror) else None
+        recorded = set_machine_info(role=role, primary=is_primary, vault_path=vault_path)
+        print(f"  ✓ recorded {USER_CONFIG_DIR}/machine.json")
+        print(f"    hostname: {recorded['hostname']}")
+        print(f"    role:     {role} ({'primary' if is_primary else 'secondary'})")
+        if vault_path:
+            print(f"    vault:    {vault_path}")
+
+    print("\n6) Marking setup complete")
     mark_setup_completed()
     print(f"  ✓ stamped {USER_CONFIG_DIR}/installed-at")
 
