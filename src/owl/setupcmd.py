@@ -32,9 +32,19 @@ from owl.vault import DEFAULT_VAULT
 
 ASSETS_DIR = Path(__file__).parent / "claude_assets"
 USER_CLAUDE_AGENTS = Path.home() / ".claude" / "agents"
+USER_CLAUDE_COMMANDS = Path.home() / ".claude" / "commands"
 USER_AGENTS_SKILLS = Path.home() / ".agents" / "skills"
 
 OWL_SUBAGENTS = ("owl-librarian", "owl-compiler", "owl-health")
+OWL_SLASH_COMMANDS = (
+    "owl-search",
+    "owl-health",
+    "owl-query",
+    "owl-ingest",
+    "owl-compile",
+    "owl-file",
+    "owl-promote",
+)
 
 
 def diagnose_env() -> Tuple[bool, List[str]]:
@@ -114,6 +124,39 @@ def install_subagent_symlinks() -> List[str]:
     return msgs
 
 
+def install_global_slash_commands() -> List[str]:
+    """Symlink /owl-* slash commands into ~/.claude/commands/.
+
+    Makes the owl slash commands globally available in any Claude Code
+    session, regardless of the current working directory. The commands
+    use the ``owl`` CLI which auto-discovers the active vault, so they
+    work from any project.
+
+    See docs/external-knowledge-integration-v0.md for the design rationale.
+    """
+    commands_src = ASSETS_DIR / "commands"
+    msgs = ["Symlinking slash commands to ~/.claude/commands/ ..."]
+    USER_CLAUDE_COMMANDS.mkdir(parents=True, exist_ok=True)
+    for name in OWL_SLASH_COMMANDS:
+        src = commands_src / f"{name}.md"
+        dst = USER_CLAUDE_COMMANDS / f"{name}.md"
+        if not src.exists():
+            msgs.append(f"  - {name}: source not found at {src} — skipping")
+            continue
+        if dst.is_symlink() or dst.exists():
+            try:
+                dst.unlink()
+            except OSError as e:
+                msgs.append(f"  - {name}: could not remove existing: {e}")
+                continue
+        try:
+            dst.symlink_to(src)
+            msgs.append(f"  - {name}: → {src}")
+        except OSError as e:
+            msgs.append(f"  - {name}: symlink failed: {e}")
+    return msgs
+
+
 def setup(interactive: bool = True) -> int:
     """Run the full setup flow."""
     print("owl — setup")
@@ -157,7 +200,11 @@ def setup(interactive: bool = True) -> int:
     for line in install_subagent_symlinks():
         print(line)
 
-    print("\n4) Marking setup complete")
+    print("\n4) User-global slash commands (external knowledge access)")
+    for line in install_global_slash_commands():
+        print(line)
+
+    print("\n5) Marking setup complete")
     mark_setup_completed()
     print(f"  ✓ stamped {USER_CONFIG_DIR}/installed-at")
 
@@ -166,7 +213,12 @@ def setup(interactive: bool = True) -> int:
     print("  owl search 'filing loop'  # search the wiki without RAG")
     print("  owl health                # run vault integrity checks (8 rules)")
     print()
-    print("  LLM agents: subagent symlinks at ~/.claude/agents/owl-* are now live.")
-    print("  Use Task tool with owl-librarian / owl-compiler / owl-health for")
-    print("  filing, compile, and health work in any Claude Code session.")
+    print("  LLM agents in ANY Claude Code session can now use:")
+    print("    /owl-search <query>     # slash command, globally available")
+    print("    /owl-query <question>   # big-question workflow")
+    print("    /owl-health             # vault health + fix plan")
+    print("    Task(owl-librarian), Task(owl-compiler), Task(owl-health)")
+    print()
+    print("  owl vault is external knowledge accessible from any project.")
+    print("  See docs/external-knowledge-integration-v0.md for the design.")
     return 0
