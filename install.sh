@@ -54,9 +54,12 @@ REPO_DIR="${OWL_REPO:-${AGENT_BRAIN_REPO:-$HOME/_/projects/owl}}"
 REPO_URL="${OWL_REPO_URL:-${AGENT_BRAIN_REPO_URL:-https://github.com/songblaq/owl.git}}"
 BRANCH="${OWL_BRANCH:-${AGENT_BRAIN_BRANCH:-main}}"
 
-say() { printf '\033[1;36m%s\033[0m\n' "$*"; }
-warn() { printf '\033[1;33m%s\033[0m\n' "$*" >&2; }
-die() { printf '\033[1;31m%s\033[0m\n' "$*" >&2; exit 1; }
+# NOTE: use %b (not %s) so escape sequences like \n in the argument are
+# interpreted. Callers use `say "\n2) ..."` to get a blank line before
+# each section header. Without %b, the literal "\n" is printed.
+say() { printf '\033[1;36m%b\033[0m\n' "$*"; }
+warn() { printf '\033[1;33m%b\033[0m\n' "$*" >&2; }
+die() { printf '\033[1;31m%b\033[0m\n' "$*" >&2; exit 1; }
 
 say "owl installer"
 say "============="

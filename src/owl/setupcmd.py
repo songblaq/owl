@@ -220,13 +220,13 @@ def setup(
     for line in install_global_slash_commands():
         print(line)
 
-    # Optional machine identity marking (multi-machine deployments)
+    # Step 5 — Machine identity (always printed, action depends on flags)
+    print("\n5) Machine identity")
     roles_requested = sum([mark_primary, mark_mirror, mark_client])
     if roles_requested > 1:
-        print("\n  ✗ pass only one of --mark-primary / --mark-mirror / --mark-client", file=sys.stderr)
+        print("  ✗ pass only one of --mark-primary / --mark-mirror / --mark-client", file=sys.stderr)
         return 2
     if roles_requested == 1:
-        print("\n5) Machine identity")
         if mark_primary:
             role, is_primary = "primary", True
         elif mark_mirror:
@@ -238,9 +238,19 @@ def setup(
         recorded = set_machine_info(role=role, primary=is_primary, vault_path=vault_path)
         print(f"  ✓ recorded {USER_CONFIG_DIR}/machine.json")
         print(f"    hostname: {recorded['hostname']}")
-        print(f"    role:     {role} ({'primary' if is_primary else 'secondary'})")
+        print(f"    role:     {role}")
         if vault_path:
             print(f"    vault:    {vault_path}")
+    else:
+        existing = get_machine_info()
+        if existing:
+            print(f"  ↳ already marked: {existing.get('hostname', '?')} ({existing.get('role', '?')})")
+            print(f"    (re-run with --mark-primary|--mark-mirror|--mark-client to change)")
+        else:
+            print(f"  ↳ unmarked (this machine has no ~/.owl/machine.json)")
+            print(f"    Run `owl setup --mark-primary` if this is the canonical vault host,")
+            print(f"    `--mark-mirror` if it has a synced copy, or `--mark-client` for remote-only.")
+            print(f"    See docs/multi-machine-setup-v0.md for details.")
 
     print("\n6) Marking setup complete")
     mark_setup_completed()
