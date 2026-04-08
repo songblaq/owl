@@ -142,6 +142,12 @@
       "type": "file"
     },
     {
+      "path": "docs/health-check-spec-v0.md",
+      "accessCount": 5,
+      "lastAccessed": 1775627725827,
+      "type": "file"
+    },
+    {
       "path": "src/agent_brain/initcmd.py",
       "accessCount": 4,
       "lastAccessed": 1775529820504,
@@ -163,12 +169,6 @@
       "path": "docs/openclaw-reflection-log-v0.md",
       "accessCount": 4,
       "lastAccessed": 1775575342917,
-      "type": "file"
-    },
-    {
-      "path": "docs/health-check-spec-v0.md",
-      "accessCount": 4,
-      "lastAccessed": 1775627034019,
       "type": "file"
     },
     {

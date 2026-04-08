@@ -219,12 +219,31 @@ def extract_output_links(content: str) -> List[str]:
     return re.findall(r"outputs/[^`\s)]+", strip_code_blocks(content))
 
 
+def is_outputs_exempt(content: str) -> bool:
+    """Check if a compiled doc is explicitly exempt from the report outputs rule.
+
+    Text-only analysis reports (e.g., health checks, audits, retrospectives)
+    may not have any outputs/* artifacts by design. They can opt out of
+    report-missing-output-links by adding a frontmatter-style marker:
+
+        outputs-exempt: true
+
+    This marker must appear anywhere in the file content (typically right
+    after the 5 required headers). Reports without this marker are still
+    subject to the check.
+    """
+    return bool(re.search(r"^outputs-exempt:\s*true\s*$", content, flags=re.MULTILINE))
+
+
 def check_report_outputs(base: Path) -> List[Issue]:
     issues: List[Issue] = []
     for path in compiled_files(base):
         content = read_text(path)
         kind = compiled_kind(content)
         if kind != "report":
+            continue
+        # Honor opt-out for text-only analysis reports
+        if is_outputs_exempt(content):
             continue
         links = extract_output_links(content)
         if not links:
@@ -233,7 +252,7 @@ def check_report_outputs(base: Path) -> List[Issue]:
                     rule="report-missing-output-links",
                     severity="medium",
                     path=path,
-                    detail="report has no outputs/* links",
+                    detail="report has no outputs/* links (add `outputs-exempt: true` if text-only)",
                 )
             )
             continue
