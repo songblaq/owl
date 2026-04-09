@@ -1,8 +1,10 @@
-# agent-brain
+# oh-my-brain (omb)
 
 Personal LLM-maintained knowledge system. Multiple **views** (strategies)
 over a shared **source** corpus — each view manages the same knowledge
 differently so their strengths can be compared and combined.
+
+Unified CLI: `omb` wraps all views under one command.
 
 ## Architecture
 
@@ -13,8 +15,9 @@ brain-vault/                     (data home — ~/brain-vault)
 ├── cairn/       → cairn-vault   (cairn view — atomic claims + INDEX)
 └── wiki/                        (wiki view — pure Karpathy, no tooling)
 
-agent-brain/                     (this repo — code + specs + benchmarks)
+oh-my-brain/                     (this repo — code + specs + benchmarks)
 ├── views/
+│   ├── omb/                     (omb CLI: unified entry point)
 │   ├── owl/                     (owl CLI: owl search, owl health, ...)
 │   ├── cairn/                   (cairn CLI: cairn search, cairn index, ...)
 │   └── wiki/                    (no CLI — LLM IS the tool)
@@ -72,10 +75,11 @@ write throughput, and write ergonomics.
 ## Install
 
 ```bash
-# owl
-cd views/owl && pipx install -e .
+# omb (unified CLI — recommended)
+cd views/omb && pipx install -e .
 
-# cairn
+# individual views (also available via omb owl/cairn)
+cd views/owl && pipx install -e .
 cd views/cairn && pipx install -e .
 
 # wiki — no install needed

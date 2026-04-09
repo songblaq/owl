@@ -100,7 +100,7 @@ Mac mini 에 `/Users/lucablaq/_/Sync/` 디렉토리 존재 — sync 도구 사�
 ### Primary (Mac mini — 현재 상태)
 
 ```bash
-git clone https://github.com/songblaq/agent-brain.git ~/_/projects/agent-brain
+git clone https://github.com/songblaq/oh-my-brain.git ~/_/projects/agent-brain
 cd ~/_/projects/agent-brain/views/owl
 pipx install --editable .
 owl setup --mark-primary --non-interactive
@@ -112,7 +112,7 @@ owl status  # machine: <hostname> (primary) 확인
 
 ```bash
 # 1. 프로젝트 repo clone
-git clone https://github.com/songblaq/agent-brain.git ~/_/projects/agent-brain
+git clone https://github.com/songblaq/oh-my-brain.git ~/_/projects/agent-brain
 cd ~/_/projects/agent-brain/views/owl
 pipx install --editable .
 

@@ -20,7 +20,7 @@ immutable **source** corpus so their strengths can be measured and combined.
 ## 2. Repository Layout
 
 ```
-~/_/projects/agent-brain/              GitHub: songblaq/agent-brain
+~/_/projects/agent-brain/              GitHub: songblaq/oh-my-brain
   README.md                            architecture overview
   LICENSE                              MIT
   .gitignore                           Python + vault protection
@@ -137,7 +137,7 @@ owl = human-facing wiki (Obsidian). cairn = LLM-facing brain (atomic INDEX).
 ```
                    +---------------------------------------------+
                    |          agent-brain  (monorepo)             |
-                   |        github.com/songblaq/agent-brain       |
+                   |        github.com/songblaq/oh-my-brain       |
                    |                                             |
                    |  docs/           views/                     |
                    |  +-----------+   +-------+-------+-------+ |
@@ -305,7 +305,7 @@ owl = human-facing wiki (Obsidian). cairn = LLM-facing brain (atomic INDEX).
  owl standalone repo                 monorepo restructure
  ┌─────────────────────┐             ┌──────────────────────────────┐
  │ ~/_/projects/owl    │             │ ~/_/projects/agent-brain     │
- │ songblaq/owl        │   rename    │ songblaq/agent-brain         │
+ │ songblaq/owl        │   rename    │ songblaq/oh-my-brain         │
  │ single pyproject    │ ─────────>  │ views/owl + cairn + wiki     │
  │ 18 phases A-R       │             │ brain-vault symlink hub      │
  └─────────────────────┘             └──────────────┬───────────────┘

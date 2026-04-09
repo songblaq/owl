@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "omb"
+version = "0.1.0"
+description = "oh-my-brain — unified CLI for personal LLM knowledge views"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+
+[project.scripts]
+omb = "omb.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["omb*"]

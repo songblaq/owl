@@ -6,7 +6,7 @@
 # spiritually descended from Vannevar Bush's Memex (1945).
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/songblaq/agent-brain/main/views/owl/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/songblaq/oh-my-brain/main/views/owl/install.sh | bash
 #
 # NOTE: Pipe to `bash` (not `sh`). On systems where /bin/sh is dash
 # (e.g., Debian/Ubuntu/WSL), piping to `sh` fails because dash doesn't
@@ -51,7 +51,7 @@ else
 fi
 
 REPO_DIR="${OWL_REPO:-${AGENT_BRAIN_REPO:-$HOME/_/projects/agent-brain}}"
-REPO_URL="${OWL_REPO_URL:-${AGENT_BRAIN_REPO_URL:-https://github.com/songblaq/agent-brain.git}}"
+REPO_URL="${OWL_REPO_URL:-${AGENT_BRAIN_REPO_URL:-https://github.com/songblaq/oh-my-brain.git}}"
 BRANCH="${OWL_BRANCH:-${AGENT_BRAIN_BRANCH:-main}}"
 
 # NOTE: use %b (not %s) so escape sequences like \n in the argument are

@@ -138,7 +138,7 @@ Claude:
 
 첫 설치:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/songblaq/agent-brain/main/views/owl/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/songblaq/oh-my-brain/main/views/owl/install.sh | bash
 # → owl CLI + 서브에이전트 심링크 + 슬래시 명령 심링크 + vault init (옵션)
 ```
 
