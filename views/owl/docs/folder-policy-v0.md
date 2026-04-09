@@ -4,7 +4,7 @@
 상태: 초안
 
 ## 1. 프로젝트 폴더
-- `~/_/projects/agent-brain/views/owl`
+- `~/_/projects/oh-my-brain/views/owl`
 
 ### 하위 폴더
 - `docs/`: 구조, 명세, 소스 문서

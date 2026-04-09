@@ -69,7 +69,7 @@ LLM Knowledge System.
 ## 4. 기본 디렉토리 정책
 
 ### 프로젝트 경로
-- `~/_/projects/agent-brain/views/owl`
+- `~/_/projects/oh-my-brain/views/owl`
 
 ### 앱 데이터 경로
 - `~/owl-vault`
