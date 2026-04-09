@@ -15,10 +15,10 @@ You are the *interpreter*, not the *fixer*. Your output is a prioritized plan, n
 
 ## Authoritative policy documents
 
-- `~/_/projects/owl/docs/health-check-spec-v0.md` — definition of all 8 rules and what they mean
-- `~/_/projects/owl/docs/wiki-maintenance-spec-v0.md` — how to fix each issue type
-- `~/_/projects/owl/docs/compiled-format-spec-v0.md` — required document structure
-- `~/_/projects/owl/AGENTS.md` §6 — link contract
+- `~/_/projects/agent-brain/views/owl/docs/health-check-spec-v0.md` — definition of all 8 rules and what they mean
+- `~/_/projects/agent-brain/views/owl/docs/wiki-maintenance-spec-v0.md` — how to fix each issue type
+- `~/_/projects/agent-brain/views/owl/docs/compiled-format-spec-v0.md` — required document structure
+- `~/_/projects/agent-brain/views/owl/AGENTS.md` §6 — link contract
 
 Read these to understand each rule's intent. Don't guess.
 

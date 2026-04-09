@@ -84,7 +84,7 @@ owl-query.md 의 body 에 명시됨 (2026-04-08 갱신).
 
 ### 4.3 Source of truth 는 프로젝트 repo
 
-모든 슬래시 명령, 서브에이전트 프롬프트의 source of truth 는 `~/_/projects/owl/src/owl/claude_assets/`. global 심링크는 여기를 가리킴. `git pull` 한 번으로 모든 세션이 갱신됨.
+모든 슬래시 명령, 서브에이전트 프롬프트의 source of truth 는 `~/_/projects/agent-brain/views/owl/src/owl/claude_assets/`. global 심링크는 여기를 가리킴. `git pull` 한 번으로 모든 세션이 갱신됨.
 
 예외: `<vault>/.claude/commands/` 에 `owl init` 이 복사해두는 것은 vault 가 자체 Claude Code 컨텍스트를 가지기 위함. global 심링크 (`~/.claude/commands/`) 와 중복 존재.
 
@@ -138,7 +138,7 @@ Claude:
 
 첫 설치:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/songblaq/owl/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/songblaq/agent-brain/main/views/owl/install.sh | bash
 # → owl CLI + 서브에이전트 심링크 + 슬래시 명령 심링크 + vault init (옵션)
 ```
 

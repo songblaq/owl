@@ -13,7 +13,7 @@ owl 은 Andrej Karpathy 의 "**LLM Wiki**" 패턴(2026) 의 구현체다. Vannev
 
 - **Origin source**: `~/owl-vault/raw/2026-04-07-karpathy-llm-wiki-gist-raw.md` (Karpathy 의 원문 gist, 절대 편집 금지)
 - **CLI 이름**: `owl` (이전 `brain` 에서 리네임. 2026-04-07. 이유: Karpathy LLM Wiki 정체성 + Apache Bench 충돌 회피)
-- **프로젝트 디렉토리**: `~/_/projects/owl`
+- **프로젝트 디렉토리**: `~/_/projects/agent-brain/views/owl`
 
 ## 1. 목적
 
@@ -22,7 +22,7 @@ owl 은 Andrej Karpathy 의 "**LLM Wiki**" 패턴(2026) 의 구현체다. Vannev
 
 ## 2. 기본 경로
 
-- 프로젝트: `~/_/projects/owl`
+- 프로젝트: `~/_/projects/agent-brain/views/owl`
 - 앱 데이터 (vault): `~/owl-vault` (레거시 `~/.agents/brain` 도 폴백 인식)
 - user config: `~/.owl/`
 - 기본 surface: Obsidian
@@ -65,7 +65,7 @@ raw source -> LLM compile -> compiled wiki -> QA/output -> filing -> compiled wi
 - `CLAUDE.md`: vault governance (`owl init` 가 생성, ~80줄)
 - `.claude/settings.json`: 5개 hook (`owl init --hooks` 가 생성, 모두 `owl hook <name>` 호출)
 - `.claude/commands/owl-*.md`: 7개 슬래시 명령 (`owl init --hooks` 가 복사)
-- 위 4개 항목은 코드 없음 — `~/_/projects/owl/src/owl/` 의 로직을 호출만 함
+- 위 4개 항목은 코드 없음 — `~/_/projects/agent-brain/views/owl/src/owl/` 의 로직을 호출만 함
 
 ## 5. 파일 유형 계약
 
@@ -145,7 +145,7 @@ raw source -> LLM compile -> compiled wiki -> QA/output -> filing -> compiled wi
 - 설명만 하고 파일을 남기지 않는 응답에 의존하지 않는다.
 - source 없는 주장 문서를 만들지 않는다.
 - 복잡한 구조를 먼저 도입하지 않는다. 반복 패턴이 생기면 그때 승격한다.
-- vault 안에 Python/실행 코드를 두지 않는다 (4계층 invariant). 모든 로직은 `~/_/projects/owl/src/owl/` 에.
+- vault 안에 Python/실행 코드를 두지 않는다 (4계층 invariant). 모든 로직은 `~/_/projects/agent-brain/views/owl/src/owl/` 에.
 
 ## 11. 운영 레이어 (owl)
 

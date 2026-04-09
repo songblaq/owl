@@ -25,7 +25,6 @@ Thumbs.db
 # certainly misplaced vault content.
 /raw/
 /compiled/
-/views/
 /outputs/
 /inbox/
 /research/

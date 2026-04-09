@@ -21,7 +21,7 @@ owl 의 정책(48+ docs)을 Claude Code 가 자동으로 따르게 하는 **운�
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │ LAYER 1 — SPEC (project repo, source of truth)                   │
-│ ~/_/projects/owl/                                        │
+│ ~/_/projects/agent-brain/views/owl/                                        │
 │   ├── docs/             ← 48+개 정책 문서                         │
 │   ├── src/owl/          ← Python 패키지 (CLI + hooks + assets)   │
 │   ├── pyproject.toml    ← `owl` console_script                   │
@@ -138,8 +138,8 @@ curl -fsSL https://raw.githubusercontent.com/<owner>/owl/main/install.sh | sh
 ```
 
 `install.sh` 는:
-1. git clone (또는 pull) → `~/_/projects/owl`
-2. `pipx install --editable .` → `~/.local/bin/owl`
+1. git clone (또는 pull) → `~/_/projects/agent-brain`
+2. `cd views/owl && pipx install --editable .` → `~/.local/bin/owl`
 3. `owl setup` 실행 (interactive TUI)
    - 환경 진단
    - vault 발견 → `owl init` 실행 권유

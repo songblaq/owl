@@ -7,7 +7,7 @@
 
 ## 위치
 - 공통 canonical 규약: `~/.agents/first-principles/equation-first.md`
-- 프로젝트 설계/적용 문맥: `~/_/projects/owl/docs/first-principles/equation-first.md`
+- 프로젝트 설계/적용 문맥: `~/_/projects/agent-brain/views/owl/docs/first-principles/equation-first.md`
 - 운영 데이터/지식화 결과: `~/owl-vault/`
 
 ## owl에서 다뤄야 하는 핵심 질문
@@ -50,7 +50,7 @@ OpenClaw 쪽에는 다음 항목을 우선 붙이는 것이 적절하다.
 ## 운영 원칙
 - 공통 규약은 `.agents/first-principles`에 둔다.
 - 구체 사례와 학습은 owl에 둔다.
-- 프로젝트 차원의 설계 논의는 `~/_/projects/owl/docs`에서 관리한다.
+- 프로젝트 차원의 설계 논의는 `~/_/projects/agent-brain/views/owl/docs`에서 관리한다.
 
 ## 다음 단계 제안
 1. owl에 `equation-first-concept` compiled 문서 생성

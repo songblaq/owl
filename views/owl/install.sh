@@ -6,7 +6,7 @@
 # spiritually descended from Vannevar Bush's Memex (1945).
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/songblaq/owl/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/songblaq/agent-brain/main/views/owl/install.sh | bash
 #
 # NOTE: Pipe to `bash` (not `sh`). On systems where /bin/sh is dash
 # (e.g., Debian/Ubuntu/WSL), piping to `sh` fails because dash doesn't
@@ -14,7 +14,7 @@
 # but using `| bash` is the correct invocation.
 #
 # What it does:
-#   1. Clones (or updates) the project repo to ~/_/projects/owl
+#   1. Clones (or updates) the monorepo to ~/_/projects/agent-brain
 #      (override with $OWL_REPO).
 #   2. Installs the `owl` CLI via pipx in editable mode.
 #   3. Runs `owl setup` to diagnose env, create user-global subagent
@@ -50,8 +50,8 @@ else
     set -euo pipefail
 fi
 
-REPO_DIR="${OWL_REPO:-${AGENT_BRAIN_REPO:-$HOME/_/projects/owl}}"
-REPO_URL="${OWL_REPO_URL:-${AGENT_BRAIN_REPO_URL:-https://github.com/songblaq/owl.git}}"
+REPO_DIR="${OWL_REPO:-${AGENT_BRAIN_REPO:-$HOME/_/projects/agent-brain}}"
+REPO_URL="${OWL_REPO_URL:-${AGENT_BRAIN_REPO_URL:-https://github.com/songblaq/agent-brain.git}}"
 BRANCH="${OWL_BRANCH:-${AGENT_BRAIN_BRANCH:-main}}"
 
 # NOTE: use %b (not %s) so escape sequences like \n in the argument are
@@ -110,7 +110,7 @@ echo "  ✓ repo at $REPO_DIR"
 
 # 3. Install the CLI
 say "\n3) Installing owl CLI"
-cd "$REPO_DIR"
+cd "$REPO_DIR/views/owl"
 if [ "$INSTALLER" = "pipx" ]; then
     pipx install --editable . --force >/dev/null 2>&1 || die "  ✗ pipx install failed"
     echo "  ✓ pipx install --editable . (succeeded)"
