@@ -1,0 +1,7 @@
+{
+  "name": "oh-my-brain",
+  "version": "0.1.0",
+  "description": "Personal LLM-maintained knowledge system — search, ingest, and compile your knowledge vault",
+  "author": "songblaq",
+  "runtimes": ["claude-code", "codex", "openclaw", "gemini"]
+}
