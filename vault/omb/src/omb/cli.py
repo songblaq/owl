@@ -4,12 +4,9 @@ External interface. Internal vault implementation (akasha) is not
 exposed directly — all user-facing operations go through `omb`.
 
 Architecture:
-    sources/    shared raw input (immutable)
-    vaults/
-      akasha    primary vault — LLM-managed knowledge layer (internal)
-
-Deprecated vaults (benchmark/experimental, no longer operated):
-    owl / facet / lattice / cairn / wiki / rehalf / rezero
+    .omb/
+      source/   shared raw input (immutable)
+      vault/    akasha — primary vault (LLM-managed knowledge layer)
 """
 from __future__ import annotations
 
@@ -26,7 +23,7 @@ def _akasha(args: List[str]) -> int:
     path = shutil.which("akasha")
     if not path:
         print("omb: vault engine (akasha) not found on PATH.", file=sys.stderr)
-        print("  Reinstall: cd views/akasha && pipx install -e .", file=sys.stderr)
+        print("  Reinstall: cd vault/akasha && pipx install -e .", file=sys.stderr)
         return 127
     return subprocess.call([path] + args)
 

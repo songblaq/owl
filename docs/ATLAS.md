@@ -184,8 +184,8 @@ CLAUDE.md registers this reflex globally.
 ## Install
 
 ```bash
-cd views/omb && pipx install -e .
-cd views/akasha && pipx install -e .
+cd vault/omb && pipx install -e .
+cd vault/akasha && pipx install -e .
 
 # verify
 omb status
