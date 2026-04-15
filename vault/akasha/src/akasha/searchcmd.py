@@ -151,12 +151,16 @@ def run_search(
         print("error: empty query", file=sys.stderr)
         return 2
 
-    # Layer 1: compiled search
-    compiled_matches = _search_compiled(vault, tokens)
-
-    # Layer 2: entry search with alias resolution
+    # Alias resolution — expand tokens before any search layer
     aliases = load_aliases(vault)
     resolved_topic = resolve_topic(query, aliases)
+    if resolved_topic:
+        for t in tokenize_query(resolved_topic):
+            if t not in tokens:
+                tokens.append(t)
+
+    # Layer 1: compiled search
+    compiled_matches = _search_compiled(vault, tokens)
 
     all_entries = iter_entries(vault, include_superseded=include_superseded)
     if not all_entries:
