@@ -1,5 +1,8 @@
 ---
 name: omb-compile
+version: "0.1.0"
+author: songblaq
+license: MIT
 description: Compile oh-my-brain vault topics — check pending topics, dump entries for a topic, and write LLM narrative to compiled/<topic>.md
 triggers:
   - "omb compile"

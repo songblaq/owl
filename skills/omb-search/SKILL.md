@@ -1,5 +1,8 @@
 ---
 name: omb-search
+version: "0.1.0"
+author: songblaq
+license: MIT
 description: Search the oh-my-brain knowledge vault. Use before answering knowledge questions. Runs 3-layer search (compiled narratives + atomic entries + graph expansion) and reads top results as evidence.
 triggers:
   - "omb search"

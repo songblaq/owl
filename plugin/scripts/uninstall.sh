@@ -13,9 +13,6 @@ info()    { echo -e "${BLUE}[omb]${NC} $*"; }
 success() { echo -e "${GREEN}[omb]${NC} $*"; }
 warn()    { echo -e "${YELLOW}[omb]${NC} $*"; }
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-
 CLAUDE_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 CLAUDE_MD="$CLAUDE_DIR/CLAUDE.md"
 AGENTS_SKILLS_DIR="$HOME/.agents/skills"
@@ -65,6 +62,23 @@ for skill in omb-search omb-ingest omb-health omb-compile omb-setup omb-update; 
 done
 success "skills removed"
 
+# ── remove Hermes skills (symlinks) ──────────────────────────────────────────
+HERMES_SKILLS_DIR="$HOME/.hermes/skills"
+HERMES_CATEGORY="knowledge"
+if [ -d "$HERMES_SKILLS_DIR/$HERMES_CATEGORY" ]; then
+  info "Removing Hermes skills..."
+  for skill in omb-search omb-ingest omb-health omb-compile omb-setup omb-update; do
+    target="$HERMES_SKILLS_DIR/$HERMES_CATEGORY/$skill"
+    if [ -e "$target" ] || [ -L "$target" ]; then
+      rm -rf "$target"
+      echo "    removed: $target"
+    fi
+  done
+  # Remove category dir if empty
+  rmdir "$HERMES_SKILLS_DIR/$HERMES_CATEGORY" 2>/dev/null || true
+  success "Hermes skills removed"
+fi
+
 # ── remove Gemini extension ──────────────────────────────────────────────────
 if command -v gemini &>/dev/null; then
   info "Removing Gemini extension..."
@@ -75,15 +89,6 @@ fi
 if command -v openclaw &>/dev/null; then
   info "Removing OpenClaw plugin..."
   openclaw plugins uninstall oh-my-brain-openclaw 2>/dev/null && success "OpenClaw plugin removed" || warn "OpenClaw plugin not found (skip)"
-fi
-
-# ── remove Hermes skills ─────────────────────────────────────────────────────
-if command -v hermes &>/dev/null; then
-  info "Removing Hermes skills..."
-  for skill in omb-search omb-ingest omb-health omb-compile omb-setup omb-update; do
-    hermes skills uninstall "$skill" 2>/dev/null && echo "    removed: $skill" || true
-  done
-  success "Hermes skills removed"
 fi
 
 # ── remove CLAUDE.md block ────────────────────────────────────────────────────

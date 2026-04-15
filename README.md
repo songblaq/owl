@@ -15,166 +15,96 @@ Single active vault: **akasha** — atomic entries + compiled narratives + conce
 
 ## Quick Start
 
-**1. Install**
+**Step 1 — Install**
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/songblaq/oh-my-brain/main/plugin/scripts/bootstrap.sh | bash
 ```
 
-**2. Verify**
+**Step 2 — Verify**
 
 ```bash
 omb status
 ```
 
-**3. Search**
+**Step 3 — Search**
 
 ```bash
 omb search "what is PLF"
 ```
 
+That's it. Your LLM now has access to your personal knowledge vault.
+
 ---
 
 ## Install
 
-### Option A — One-liner (new machine)
+| Method | Command | Best for |
+|--------|---------|----------|
+| **curl** | `curl -fsSL .../bootstrap.sh \| bash` | New machine, fastest |
+| **Claude Code plugin** | `/plugin marketplace add https://github.com/songblaq/oh-my-brain` → `/plugin install oh-my-brain` → `/omb:setup` | Already using Claude Code |
+| **Manual clone** | `git clone ... && bash plugin/scripts/install.sh` | Development / customization |
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/songblaq/oh-my-brain/main/plugin/scripts/bootstrap.sh | bash
-```
-
-Prerequisites: `git`, `python3`, `pipx`. On macOS:
-
-```bash
-brew install pipx
-pipx ensurepath
-```
-
-### Option B — Claude Code plugin
-
-```bash
-/plugin marketplace add https://github.com/songblaq/oh-my-brain
-```
-
-```bash
-/plugin install oh-my-brain
-```
-
-```bash
-/omb:setup
-```
-
-> `/plugin install` registers skills automatically. `/omb:setup` installs Python packages via pipx.
-
-### Option C — Manual clone
-
-```bash
-git clone https://github.com/songblaq/oh-my-brain.git ~/omb/oh-my-brain
-```
-
-```bash
-bash ~/omb/oh-my-brain/plugin/scripts/install.sh
-```
+> **Note:** The `/plugin install` method registers skills automatically, but requires `/omb:setup` to install Python packages (pipx). This is the same "install → setup" pattern as oh-my-claudecode.
 
 ### Update
 
-Via skill (recommended):
-
 ```bash
+# Via skill (recommended)
 /omb:update
-```
 
-Or directly:
-
-```bash
-git -C ~/omb/oh-my-brain pull
-```
-
-```bash
-bash ~/omb/oh-my-brain/plugin/scripts/install.sh
-```
-
-### Uninstall
-
-```bash
-bash ~/omb/oh-my-brain/plugin/scripts/uninstall.sh
+# Or directly
+git -C ~/omb/oh-my-brain pull && bash ~/omb/oh-my-brain/plugin/scripts/install.sh
 ```
 
 ---
 
 ## Runtime Support
 
-`install.sh` detects and installs into all available runtimes automatically.
+oh-my-brain installs into every supported runtime automatically during `install.sh`.
 
-| Runtime | Integration | Skills |
-|---------|-------------|--------|
-| **Claude Code** | `~/.agents/skills/` symlinks + `CLAUDE.md` block | 6 skills |
-| **Codex CLI** | Shared `~/.agents/skills/` + `CLAUDE.md` | 6 skills |
-| **OpenCode** | `~/.agents/skills/` symlinks | 6 skills |
-| **Gemini CLI** | `gemini extensions install` + `GEMINI.md` | 6 skills |
-| **OpenClaw** | `openclaw plugins install` | 4 tools |
-| **Hermes** | `hermes skills install` per skill | 6 skills |
+| Runtime | Integration | Install method | Skills |
+|---------|-------------|----------------|--------|
+| **Claude Code** | `~/.agents/skills/` symlinks + `CLAUDE.md` block | `/plugin install` or `curl` | ✅ 6 skills |
+| **Codex CLI** | Shared `~/.agents/skills/` + `CLAUDE.md` | Same plugin cache | ✅ 6 skills |
+| **OpenCode** | Shared `~/.agents/skills/` symlinks | `curl` / `install.sh` | ✅ 6 skills |
+| **Gemini CLI** | `gemini extensions install` + `GEMINI.md` | `curl` / `install.sh` | ✅ 6 skills |
+| **OpenClaw** | `openclaw plugins install` (Node.js) | `curl` / `install.sh` | ✅ 4 tools* |
+| **Hermes** | `~/.hermes/skills/knowledge/` symlinks | `curl` / `install.sh` | ✅ 6 skills |
+| GitHub Copilot | ❌ | no user plugin system | — |
+
+> \*OpenClaw exposes search/ingest/health/status as tools. compile/setup/update are multi-step LLM workflows and run as skills only.
 
 ### Manual runtime install
 
-Gemini CLI:
-
 ```bash
+# Gemini CLI
 gemini extensions install ~/omb/oh-my-brain/plugins/gemini
-```
 
-OpenClaw:
-
-```bash
+# OpenClaw
 openclaw plugins install ~/omb/oh-my-brain/plugins/openclaw
-```
 
-Hermes (one per skill):
-
-```bash
-hermes skills install ~/omb/oh-my-brain/plugins/hermes/skills/omb-search
-```
-
-```bash
-hermes skills install ~/omb/oh-my-brain/plugins/hermes/skills/omb-ingest
-```
-
-```bash
-hermes skills install ~/omb/oh-my-brain/plugins/hermes/skills/omb-health
-```
-
-```bash
-hermes skills install ~/omb/oh-my-brain/plugins/hermes/skills/omb-compile
-```
-
-```bash
-hermes skills install ~/omb/oh-my-brain/plugins/hermes/skills/omb-setup
-```
-
-```bash
-hermes skills install ~/omb/oh-my-brain/plugins/hermes/skills/omb-update
-```
-
-OpenCode — add to `~/.config/opencode/opencode.json`:
-
-```json
-{
-  "plugin": ["~/omb/oh-my-brain/plugins/opencode"]
-}
+# Hermes — symlink skills into the knowledge category
+mkdir -p ~/.hermes/skills/knowledge
+for s in ~/omb/oh-my-brain/skills/omb-*/; do
+  ln -sfn "$s" ~/.hermes/skills/knowledge/"$(basename "$s")"
+done
 ```
 
 ---
 
 ## Skills
 
+Invoke skills from within any supported agent session:
+
 | Skill | Trigger | What it does |
 |-------|---------|--------------|
-| `/omb:search` | "omb search", "브레인 검색" | 3-layer vault search, read top results, answer with evidence |
-| `/omb:ingest` | "omb ingest", "브레인에 추가" | Ingest file or text, rebuild index |
-| `/omb:health` | "omb health", "커버리지 확인" | Source coverage report, suggest next ingestion |
-| `/omb:compile` | "omb compile", "컴파일" | Pick pending topic, dump entries, LLM writes narrative |
+| `/omb:search` | "omb search", "브레인 검색" | 3-layer vault search → read top results → answer with evidence |
+| `/omb:ingest` | "omb ingest", "브레인에 추가" | Ingest file or text → rebuild index |
+| `/omb:health` | "omb health", "커버리지 확인" | Source coverage report → suggest next ingestion |
+| `/omb:compile` | "omb compile", "컴파일" | Pick pending topic → dump entries → LLM writes narrative |
 | `/omb:setup` | "omb 설치", "setup omb" | Install/reinstall everything (pipx + vault + skills) |
-| `/omb:update` | "omb update", "브레인 업데이트" | git pull, reinstall what changed, report |
+| `/omb:update` | "omb update", "브레인 업데이트" | `git pull` → reinstall what changed → report |
 
 ### Default reflex
 
@@ -189,40 +119,20 @@ question → omb search → read compiled/<topic>.md → answer with evidence
 
 ## CLI
 
-### omb (public interface)
-
 ```bash
-omb status
+omb status               # vault overview
+omb search "<query>"     # 3-layer search (compiled + entries + graph)
+omb ingest <file>        # add a file to vault
+omb ingest --text "..."  # add raw text
+omb health               # source coverage check
 ```
 
-```bash
-omb search "transformer architecture"
-```
+Internal vault engine (for maintenance):
 
 ```bash
-omb ingest ~/Documents/paper.pdf
-```
-
-```bash
-omb ingest --text "PLF stands for Product-Led Flywheel"
-```
-
-```bash
-omb health
-```
-
-### akasha (vault engine, for maintenance)
-
-```bash
-akasha compile --dry-run
-```
-
-```bash
-akasha compile --dump transformer-architecture
-```
-
-```bash
-akasha index
+akasha compile --dry-run          # show pending topics
+akasha compile --dump <topic>     # dump entries → LLM writes compiled/<topic>.md
+akasha index                      # rebuild INDEX.md + GRAPH.tsv
 ```
 
 ---
@@ -242,12 +152,10 @@ akasha index
 oh-my-brain/       this repo (code + specs)
   vault/omb/       omb CLI (public interface)
   vault/akasha/    akasha vault engine (11 modules)
-  skills/          shared skills (Claude Code / Codex / OpenCode / Gemini)
+  skills/          shared skills (all runtimes via symlinks)
   plugins/
     openclaw/      OpenClaw plugin (Node.js, register(api))
-    hermes/        Hermes skills (extended SKILL.md frontmatter)
     gemini/        Gemini extension (gemini-extension.json)
-    opencode/      OpenCode plugin package
   plugin/          install scripts + context files
     CLAUDE.md      global context (Claude Code / Codex)
     scripts/

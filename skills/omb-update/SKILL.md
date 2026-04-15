@@ -1,5 +1,8 @@
 ---
 name: omb-update
+version: "0.1.0"
+author: songblaq
+license: MIT
 description: Update oh-my-brain plugin — git pull, reinstall pipx packages, re-sync skills symlinks, refresh CLAUDE.md OMB block. Run when the repo has changes or after version bumps.
 triggers:
   - "omb update"

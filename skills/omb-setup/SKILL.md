@@ -1,5 +1,8 @@
 ---
 name: omb-setup
+version: "0.1.0"
+author: songblaq
+license: MIT
 description: Install or reinstall the oh-my-brain plugin — pipx packages, skills symlinks, CLAUDE.md patch, vault initialization.
 triggers:
   - "omb setup"

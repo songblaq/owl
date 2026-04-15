@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 
 /**
  * oh-my-brain OpenClaw plugin
@@ -6,13 +6,17 @@ import { execSync } from "child_process";
  * Registers omb CLI tools into the OpenClaw runtime.
  * Each tool wraps the corresponding `omb` subcommand.
  *
+ * Only search/ingest/health/status are exposed as tools.
+ * compile/setup/update are LLM-driven workflows (multi-step with
+ * file reads/writes) and are handled by SKILL.md skills instead.
+ *
  * Install:
  *   openclaw plugins install /path/to/oh-my-brain/plugins/openclaw
  */
 
 function runOmb(args) {
   try {
-    const result = execSync(`omb ${args}`, {
+    const result = execFileSync("omb", args, {
       encoding: "utf8",
       timeout: 30000,
     });
@@ -49,7 +53,7 @@ export function register(api) {
       required: ["query"],
     },
     execute: async ({ query, limit = 10 }) => {
-      const r = runOmb(`search "${query}" --limit ${limit}`);
+      const r = runOmb(["search", query, "--limit", String(limit)]);
       return r.success ? r.output : `Error: ${r.error}\n${r.output}`;
     },
   });
@@ -75,10 +79,10 @@ export function register(api) {
     },
     execute: async ({ file, text }) => {
       if (file) {
-        const r = runOmb(`ingest "${file}"`);
+        const r = runOmb(["ingest", file]);
         return r.success ? r.output : `Error: ${r.error}`;
       } else if (text) {
-        const r = runOmb(`ingest --text "${text.replace(/"/g, '\\"')}"`);
+        const r = runOmb(["ingest", "--text", text]);
         return r.success ? r.output : `Error: ${r.error}`;
       }
       return "Error: provide either file or text";
@@ -102,7 +106,8 @@ export function register(api) {
       },
     },
     execute: async ({ json = false }) => {
-      const r = runOmb(json ? "health --json" : "health");
+      const args = json ? ["health", "--json"] : ["health"];
+      const r = runOmb(args);
       return r.success ? r.output : `Error: ${r.error}`;
     },
   });
@@ -118,7 +123,7 @@ export function register(api) {
       properties: {},
     },
     execute: async () => {
-      const r = runOmb("status");
+      const r = runOmb(["status"]);
       return r.success ? r.output : `Error: ${r.error}`;
     },
   });

@@ -3,7 +3,7 @@
 
 # oh-my-brain (omb) — Personal LLM Knowledge System
 
-사용자의 개인 LLM-maintained 지식 시스템. 프로젝트: `~/_/projects/oh-my-brain` (GitHub: `songblaq/oh-my-brain`).
+사용자의 개인 LLM-maintained 지식 시스템. 프로젝트: `<!-- OMB:REPO -->` (GitHub: `songblaq/oh-my-brain`).
 
 단일 활성 vault: **akasha** (entries + compiled narratives + graph). owl/cairn/wiki는 deprecated.
 

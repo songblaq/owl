@@ -1,5 +1,8 @@
 ---
 name: omb-health
+version: "0.1.0"
+author: songblaq
+license: MIT
 description: Check oh-my-brain vault coverage — which sources have been ingested and which are missing. Reports gaps and suggests next ingestion targets.
 triggers:
   - "omb health"

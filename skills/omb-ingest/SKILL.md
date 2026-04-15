@@ -1,5 +1,8 @@
 ---
 name: omb-ingest
+version: "0.1.0"
+author: songblaq
+license: MIT
 description: Add new knowledge to the oh-my-brain vault. Handles file ingestion or raw text, then rebuilds the index.
 triggers:
   - "omb ingest"

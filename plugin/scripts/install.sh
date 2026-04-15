@@ -6,7 +6,7 @@
 #   Claude Code / Codex / OpenCode  → ~/.agents/skills/ symlinks + CLAUDE.md patch
 #   Gemini CLI                      → gemini extensions install
 #   OpenClaw                        → openclaw plugins install
-#   Hermes                          → hermes skills install (per-skill)
+#   Hermes                          → ~/.hermes/skills/ symlinks
 
 set -euo pipefail
 
@@ -79,8 +79,9 @@ if ! $SKILLS_ONLY && ! $CLAUDE_ONLY; then
   fi
 fi
 
-# ── step 3: Claude Code / Codex / OpenCode skills (shared ~/.agents/skills) ───
+# ── step 3: skills ────────────────────────────────────────────────────────────
 if ! $CLAUDE_ONLY; then
+  # 3a: shared skills (Claude Code / Codex / OpenCode)
   info "Syncing skills (Claude Code / Codex / OpenCode)..."
 
   mkdir -p "$AGENTS_SKILLS_DIR"
@@ -91,43 +92,48 @@ if ! $CLAUDE_ONLY; then
   done
   success "skills → $AGENTS_SKILLS_DIR"
 
-  # ── Gemini CLI ─────────────────────────────────────────────────────────────
-  if command -v gemini &>/dev/null; then
-    info "Installing Gemini CLI extension..."
-    GEMINI_PLUGIN_DIR="$REPO_ROOT/plugins/gemini"
-    if gemini extensions install "$GEMINI_PLUGIN_DIR" --force 2>/dev/null; then
-      success "Gemini extension installed"
-    else
-      warn "Gemini extension install failed (non-fatal). Manual: gemini extensions install $GEMINI_PLUGIN_DIR"
-    fi
-  fi
+  # Runtime-specific integrations (skip for --skills-only)
+  if ! $SKILLS_ONLY; then
 
-  # ── OpenClaw ───────────────────────────────────────────────────────────────
-  if command -v openclaw &>/dev/null; then
-    info "Installing OpenClaw plugin..."
-    OPENCLAW_PLUGIN_DIR="$REPO_ROOT/plugins/openclaw"
-    if openclaw plugins install "$OPENCLAW_PLUGIN_DIR" 2>/dev/null; then
-      success "OpenClaw plugin installed"
-    else
-      warn "OpenClaw plugin install failed (non-fatal). Manual: openclaw plugins install $OPENCLAW_PLUGIN_DIR"
-    fi
-  fi
-
-  # ── Hermes ─────────────────────────────────────────────────────────────────
-  if command -v hermes &>/dev/null; then
-    info "Installing Hermes skills..."
-    HERMES_SKILLS_DIR="$REPO_ROOT/plugins/hermes/skills"
-    installed=0
-    for skill_dir in "$HERMES_SKILLS_DIR"/*/; do
-      skill_name="$(basename "$skill_dir")"
-      if hermes skills install "$skill_dir" 2>/dev/null; then
-        installed=$((installed + 1))
+    # ── Gemini CLI ───────────────────────────────────────────────────────────
+    if command -v gemini &>/dev/null; then
+      info "Installing Gemini CLI extension..."
+      GEMINI_PLUGIN_DIR="$REPO_ROOT/plugins/gemini"
+      if gemini extensions install "$GEMINI_PLUGIN_DIR" 2>/dev/null; then
+        success "Gemini extension installed"
       else
-        warn "  hermes skill install failed: $skill_name (non-fatal)"
+        warn "Gemini extension install failed (non-fatal). Manual: gemini extensions install $GEMINI_PLUGIN_DIR"
       fi
-    done
-    [ "$installed" -gt 0 ] && success "Hermes: $installed skills installed"
-  fi
+    fi
+
+    # ── OpenClaw ─────────────────────────────────────────────────────────────
+    if command -v openclaw &>/dev/null; then
+      info "Installing OpenClaw plugin..."
+      OPENCLAW_PLUGIN_DIR="$REPO_ROOT/plugins/openclaw"
+      if openclaw plugins install "$OPENCLAW_PLUGIN_DIR" 2>/dev/null; then
+        success "OpenClaw plugin installed"
+      else
+        warn "OpenClaw plugin install failed (non-fatal). Manual: openclaw plugins install $OPENCLAW_PLUGIN_DIR"
+      fi
+    fi
+
+    # ── Hermes ───────────────────────────────────────────────────────────────
+    if command -v hermes &>/dev/null; then
+      info "Installing Hermes skills..."
+      HERMES_SKILLS_DIR="$HOME/.hermes/skills"
+      HERMES_CATEGORY="knowledge"
+      mkdir -p "$HERMES_SKILLS_DIR/$HERMES_CATEGORY"
+      installed=0
+      for skill_dir in "$SKILLS_SRC"/*/; do
+        skill_name="$(basename "$skill_dir")"
+        rm -rf "$HERMES_SKILLS_DIR/$HERMES_CATEGORY/$skill_name"
+        ln -sfn "$skill_dir" "$HERMES_SKILLS_DIR/$HERMES_CATEGORY/$skill_name"
+        installed=$((installed + 1))
+      done
+      [ "$installed" -gt 0 ] && success "Hermes: $installed skills → $HERMES_SKILLS_DIR/$HERMES_CATEGORY/"
+    fi
+
+  fi # ! $SKILLS_ONLY
 fi
 
 # ── step 4: CLAUDE.md upsert ─────────────────────────────────────────────────
@@ -135,21 +141,23 @@ if ! $SKILLS_ONLY; then
   info "Updating CLAUDE.md..."
   touch "$CLAUDE_MD"
 
-  NEW_BLOCK="$(cat "$PLUGIN_CLAUDE")"
-
   if grep -q "<!-- OMB:START -->" "$CLAUDE_MD"; then
     # Replace existing OMB block
     python3 - <<PYEOF
-import re, sys
+import re
+
+with open('$PLUGIN_CLAUDE', encoding='utf-8') as f:
+    new_block = f.read().strip()
+
+# Substitute repo path placeholder
+new_block = new_block.replace('<!-- OMB:REPO -->', '$REPO_ROOT')
 
 with open('$CLAUDE_MD', 'r', encoding='utf-8') as f:
     content = f.read()
 
-new_block = open('$PLUGIN_CLAUDE', encoding='utf-8').read()
-
 result = re.sub(
     r'<!-- OMB:START -->.*?<!-- OMB:END -->',
-    new_block.strip(),
+    new_block,
     content,
     flags=re.DOTALL
 )
@@ -159,9 +167,14 @@ with open('$CLAUDE_MD', 'w', encoding='utf-8') as f:
 PYEOF
     success "CLAUDE.md OMB block updated (v${VERSION})"
   else
-    # Append new OMB block
-    printf '\n\n' >> "$CLAUDE_MD"
-    cat "$PLUGIN_CLAUDE" >> "$CLAUDE_MD"
+    # Append new OMB block (with repo path substituted)
+    python3 - <<PYEOF
+with open('$PLUGIN_CLAUDE', encoding='utf-8') as f:
+    block = f.read().replace('<!-- OMB:REPO -->', '$REPO_ROOT')
+
+with open('$CLAUDE_MD', 'a', encoding='utf-8') as f:
+    f.write('\n\n' + block)
+PYEOF
     success "CLAUDE.md OMB block added (v${VERSION})"
   fi
 fi
