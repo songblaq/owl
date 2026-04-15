@@ -1,7 +1,8 @@
 ---
-id: view-contract-v0
-status: draft
+id: view-contract-v1
+status: active
 created: 2026-04-09
+updated: 2026-04-15
 ---
 
 # View contract
@@ -52,8 +53,27 @@ Views MAY:
 
 ## Current views
 
-| view | CLI | vault path | format |
-|------|-----|-----------|--------|
-| owl | `owl` | ~/owl-vault | raw/ + compiled/ (summary/note/concept/index/report) |
-| cairn | `cairn` | ~/cairn-vault | entries/ (atomic YAML+md, ~400 tok) |
-| wiki | none | ~/brain-vault/wiki/ | raw/ + compiled/ (pure Karpathy) |
+| view | CLI | vault path | format | entry point | status |
+|------|-----|-----------|--------|-------------|--------|
+| akasha | `akasha` | ~/omb/vault/akasha | entries/ + compiled/ + GRAPH.tsv | INDEX.md | **active (primary)** |
+
+### akasha specifics
+
+- Atomic entries: `entries/<slug>.md` — YAML frontmatter + ~500 token claim body
+- Compiled narratives: `compiled/<topic>.md` — LLM-written synthesis per topic
+- INDEX.md: master index with topic clusters and entry list
+- GRAPH.tsv: topic/concept adjacency list (135 edges as of 2026-04-15)
+- ALIASES.tsv: surface form → canonical name map
+- 3-layer search: compiled → entries → graph expansion
+
+## Deprecated views (benchmark history)
+
+These views were evaluated and superseded by akasha. Code preserved in `views/` for reference; no longer operated.
+
+| view | deprecated reason |
+|------|-------------------|
+| owl | ops overhead; akasha covers same knowledge surface with less tooling |
+| facet | sharding complexity without clear retrieval benefit |
+| lattice | content-addressed IDs created friction; GRAPH.tsv adopted into akasha |
+| cairn | merged into akasha (akasha = cairn entries + lattice graph + owl compiled) |
+| wiki | no CLI made LLM integration awkward; akasha compiled/ serves same purpose |

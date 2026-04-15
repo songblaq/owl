@@ -1,11 +1,15 @@
-"""omb — unified CLI dispatcher for oh-my-brain.
+"""omb — oh-my-brain, LLM-managed knowledge platform
 
-Usage:
-    omb status                  # all views at a glance
-    omb owl <subcommand>        # delegate to owl CLI
-    omb cairn <subcommand>      # delegate to cairn CLI
-    omb wiki <subcommand>       # wiki view operations
-    omb search <query>          # search across all views
+External interface. Internal vault implementation (akasha) is not
+exposed directly — all user-facing operations go through `omb`.
+
+Architecture:
+    sources/    shared raw input (immutable)
+    vaults/
+      akasha    primary vault — LLM-managed knowledge layer (internal)
+
+Deprecated vaults (benchmark/experimental, no longer operated):
+    owl / facet / lattice / cairn / wiki / rehalf / rezero
 """
 from __future__ import annotations
 
@@ -15,12 +19,14 @@ import sys
 from typing import List, Optional
 
 
-def _delegate(cli_name: str, args: List[str]) -> int:
-    """Run an external CLI, return its exit code."""
-    path = shutil.which(cli_name)
+# ── internal helpers ──────────────────────────────────────────────────────────
+
+def _akasha(args: List[str]) -> int:
+    """Delegate to the akasha vault engine. Internal use only."""
+    path = shutil.which("akasha")
     if not path:
-        print(f"omb: '{cli_name}' CLI not found on PATH.", file=sys.stderr)
-        print(f"  Install it: cd views/{cli_name} && pipx install -e .", file=sys.stderr)
+        print("omb: vault engine (akasha) not found on PATH.", file=sys.stderr)
+        print("  Reinstall: cd views/akasha && pipx install -e .", file=sys.stderr)
         return 127
     return subprocess.call([path] + args)
 
@@ -30,90 +36,81 @@ def _flush_print(*args, **kwargs):
     print(*args, **kwargs, flush=True)
 
 
+# ── public commands ───────────────────────────────────────────────────────────
+
 def cmd_status(args: List[str]) -> int:
-    """Show unified status of all views."""
+    """Show vault status and entry counts."""
     from omb import __version__
 
     _flush_print(f"omb (oh-my-brain) v{__version__}")
     _flush_print("=" * 40)
-
-    # owl
-    _flush_print("\n--- owl ---")
-    owl_path = shutil.which("owl")
-    if owl_path:
-        subprocess.call([owl_path, "status"] + args)
-    else:
-        _flush_print("  (not installed)")
-
-    # cairn
-    _flush_print("\n--- cairn ---")
-    cairn_path = shutil.which("cairn")
-    if cairn_path:
-        subprocess.call([cairn_path, "status"] + args)
-    else:
-        _flush_print("  (not installed)")
-
-    # wiki
-    _flush_print("\n--- wiki ---")
-    _flush_print("  (planned — no CLI yet)")
-
-    return 0
+    return _akasha(["status"] + args)
 
 
 def cmd_search(args: List[str]) -> int:
-    """Search across all installed views."""
+    """Search the knowledge vault."""
     import argparse
 
     parser = argparse.ArgumentParser(prog="omb search", add_help=False)
     parser.add_argument("query", nargs="*")
-    parser.add_argument("--view", choices=["owl", "cairn", "all"], default="all")
     parser.add_argument("--limit", type=int, default=5)
     parser.add_argument("--json", action="store_true")
-    parsed, remaining = parser.parse_known_args(args)
+    parsed, _ = parser.parse_known_args(args)
 
     query = " ".join(parsed.query)
     if not query:
         print("omb search: query required", file=sys.stderr)
-        print("  usage: omb search <query> [--view owl|cairn|all] [--limit N]", file=sys.stderr)
+        print("  usage: omb search <query> [--limit N] [--json]", file=sys.stderr)
         return 2
 
     search_args = [query, "--limit", str(parsed.limit)]
     if parsed.json:
         search_args.append("--json")
 
-    found_any = False
+    return _akasha(["search"] + search_args)
 
-    if parsed.view in ("owl", "all"):
-        owl_path = shutil.which("owl")
-        if owl_path:
-            found_any = True
-            if parsed.view == "all":
-                _flush_print("--- owl ---")
-            subprocess.call([owl_path, "search"] + search_args)
-            if parsed.view == "all":
-                _flush_print()
 
-    if parsed.view in ("cairn", "all"):
-        cairn_path = shutil.which("cairn")
-        if cairn_path:
-            found_any = True
-            if parsed.view == "all":
-                _flush_print("--- cairn ---")
-            subprocess.call([cairn_path, "search"] + search_args)
+def cmd_ingest(args: List[str]) -> int:
+    """Add new knowledge to the vault.
 
-    if not found_any:
-        print("omb search: no search backends available", file=sys.stderr)
-        return 1
+    Examples:
+        omb ingest notes.md
+        omb ingest --text "..." --title "my-note"
+        omb ingest --topic llm notes.md
+        omb ingest --dry-run notes.md
+    """
+    if not args:
+        print("omb ingest: source required", file=sys.stderr)
+        print("  usage: omb ingest <file>", file=sys.stderr)
+        print("         omb ingest --text \"...\" [--title <slug>]", file=sys.stderr)
+        print("         omb ingest --topic <name> <file>", file=sys.stderr)
+        return 2
+    return _akasha(["ingest"] + args)
 
-    return 0
 
+def cmd_health(args: List[str]) -> int:
+    """Coverage check: how many sources have been ingested."""
+    return _akasha(["health"] + args)
+
+
+# ── command dispatch ──────────────────────────────────────────────────────────
 
 COMMANDS = {
     "status": cmd_status,
     "search": cmd_search,
+    "ingest": cmd_ingest,
+    "health": cmd_health,
 }
 
-DELEGATE_VIEWS = {"owl", "cairn"}
+_deprecated = {
+    "cairn": "omb ingest",
+    "wiki": "omb ingest",
+    "rehalf": "omb ingest",
+    "rezero": "omb ingest",
+    "owl": "omb search / omb ingest",
+    "facet": "omb search / omb ingest",
+    "lattice": "omb search / omb ingest",
+}
 
 
 def main(argv: Optional[List[str]] = None) -> None:
@@ -131,19 +128,13 @@ def main(argv: Optional[List[str]] = None) -> None:
     cmd = args[0]
     rest = args[1:]
 
-    # omb owl ... / omb cairn ...
-    if cmd in DELEGATE_VIEWS:
-        sys.exit(_delegate(cmd, rest))
-
-    # omb status / omb search ...
     if cmd in COMMANDS:
         sys.exit(COMMANDS[cmd](rest))
 
-    # omb wiki ... (placeholder)
-    if cmd == "wiki":
-        print("omb wiki: not yet implemented (Phase V)")
-        print("  See: views/wiki/docs/wiki-view-spec.md")
-        sys.exit(0)
+    if cmd in _deprecated:
+        replacement = _deprecated[cmd]
+        print(f"omb: '{cmd}' is deprecated — use '{replacement}' instead", file=sys.stderr)
+        sys.exit(1)
 
     print(f"omb: unknown command '{cmd}'", file=sys.stderr)
     _print_help()
@@ -156,20 +147,18 @@ def _print_help() -> None:
     print()
     print("Usage: omb <command> [args...]")
     print()
-    print("Views:")
-    print("  owl <subcommand>      Delegate to owl CLI (LLM Wiki)")
-    print("  cairn <subcommand>    Delegate to cairn CLI (atomic claims)")
-    print("  wiki <subcommand>     Wiki view (planned)")
+    print("Commands:")
+    print("  status                Show vault status and counts")
+    print("  search <query>        Search knowledge vault")
+    print("    --limit N             Results per search (default: 5)")
+    print("    --json                Machine-readable output")
+    print("  ingest <file>         Add a file to the vault")
+    print("    --text \"...\"          Add raw text directly")
+    print("    --title <slug>        Filename hint (with --text)")
+    print("    --topic <name>        Assign topic explicitly")
+    print("    --dry-run             Preview without writing")
+    print("  health                Coverage check: sources vs vault")
+    print("    --json                Machine-readable output")
     print()
-    print("Unified commands:")
-    print("  status                Show all views at a glance")
-    print("  search <query>        Search across all views")
-    print("    --view owl|cairn|all  Restrict to one view (default: all)")
-    print("    --limit N             Results per view (default: 5)")
-    print()
-    print("Examples:")
-    print("  omb status")
-    print("  omb owl search 'karpathy'")
-    print("  omb cairn status --json")
-    print("  omb search 'filing loop'")
-    print("  omb search 'wiki' --view cairn --limit 3")
+    print("Deprecated (use omb search / omb ingest instead):")
+    print("  owl / facet / lattice / cairn / wiki / rehalf / rezero")
