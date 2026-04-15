@@ -36,6 +36,9 @@ Thumbs.db
 *.swo
 *~
 
+# Claude Code local state
+.claude/
+
 # Local environment
 .env
 .env.local

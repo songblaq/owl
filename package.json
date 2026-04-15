@@ -1,0 +1,6 @@
+{
+  "name": "oh-my-brain",
+  "version": "0.1.0",
+  "description": "oh-my-brain — personal LLM-maintained knowledge system plugin for Claude Code",
+  "type": "module"
+}

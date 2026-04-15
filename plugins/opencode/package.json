@@ -1,0 +1,8 @@
+{
+  "name": "oh-my-brain-opencode",
+  "version": "0.1.0",
+  "description": "oh-my-brain plugin for OpenCode — LLM knowledge vault integration",
+  "type": "module",
+  "main": "index.js",
+  "keywords": ["opencode", "plugin", "knowledge", "vault"]
+}

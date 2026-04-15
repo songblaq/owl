@@ -1,0 +1,13 @@
+{
+  "name": "oh-my-brain-openclaw",
+  "version": "0.1.0",
+  "description": "oh-my-brain plugin for OpenClaw — LLM knowledge vault tools",
+  "type": "module",
+  "main": "index.js",
+  "openclaw": {
+    "extensions": ["./index.js"]
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
