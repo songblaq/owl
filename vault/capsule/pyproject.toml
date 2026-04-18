@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "capsule"
+version = "0.1.0"
+description = "capsule — read-only compiled documentation bundles for OMB"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+keywords = ["llm", "docs", "capsule", "bundle", "omb", "read-only"]
+
+[project.scripts]
+capsule = "capsule.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["capsule*"]
+
+[tool.setuptools.package-data]
+capsule = ["assets/*.mjs"]

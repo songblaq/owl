@@ -38,11 +38,13 @@ bash <REPO_ROOT>/plugin/scripts/install.sh
 
 install.sh가 처리하는 것:
 1. `pipx install -e vault/akasha --force`
-2. `pipx install -e vault/omb --force`
-3. vault 초기화 (`~/omb/vault/akasha` 없으면 `akasha init`)
-4. skills symlink → `~/.agents/skills/omb-*/`
-5. `~/.claude/CLAUDE.md` OMB 블록 upsert
-6. repo 경로 → `~/.config/omb/plugin.json` 저장
+2. `pipx install -e vault/capsule --force`
+3. `pipx install -e vault/omb --force`
+4. vault 초기화 (`~/omb/vault/akasha` 없으면 `akasha init`)
+5. `~/omb/vault/capsule/` 루트 보장
+6. skills symlink → `~/.agents/skills/omb-*/`
+7. `~/.claude/CLAUDE.md` OMB 블록 upsert
+8. repo 경로 → `~/.config/omb/plugin.json` 저장
 
 ### Step 3: 검증
 ```bash
@@ -56,5 +58,6 @@ omb status
 |------|------|
 | `omb: command not found` | `pipx ensurepath` 후 shell 재시작 |
 | `akasha not found` | `cd vault/akasha && pipx install -e . --force` |
+| `capsule not found` | `cd vault/capsule && pipx install -e . --force` |
 | vault 없음 | `akasha init` |
 | skills 없음 | install.sh 재실행 |

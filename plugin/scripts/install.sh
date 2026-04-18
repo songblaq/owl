@@ -64,6 +64,9 @@ if ! $SKILLS_ONLY && ! $CLAUDE_ONLY; then
   (cd "$REPO_ROOT/vault/akasha" && pipx install -e . --force -q)
   success "akasha installed"
 
+  (cd "$REPO_ROOT/vault/capsule" && pipx install -e . --force -q)
+  success "capsule installed"
+
   (cd "$REPO_ROOT/vault/omb" && pipx install -e . --force -q)
   success "omb installed"
 
@@ -77,6 +80,10 @@ if ! $SKILLS_ONLY && ! $CLAUDE_ONLY; then
   else
     success "vault exists ($VAULT_DIR)"
   fi
+
+  CAPSULE_ROOT="$HOME/omb/vault/capsule"
+  mkdir -p "$CAPSULE_ROOT"
+  success "capsule root exists ($CAPSULE_ROOT)"
 fi
 
 # ── step 3: skills ────────────────────────────────────────────────────────────

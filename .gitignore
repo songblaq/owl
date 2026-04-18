@@ -42,3 +42,10 @@ Thumbs.db
 # Local environment
 .env
 .env.local
+
+# Secrets / local-only config — repo 에 절대 올리지 말 것.
+# 실제 endpoint / IP / 자격증명은 ~/.config/omb/endpoints.conf 에 보관.
+# 이 repo 에는 tools/endpoints.example.conf (placeholder) 만 들어간다.
+/tools/endpoints.conf
+/tools/endpoints.local.conf
+/.config/

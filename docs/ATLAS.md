@@ -14,7 +14,8 @@ Quick entry point for external reference. Covers architecture, CLI, data model, 
 
 **omb** is a personal LLM-maintained knowledge system. Raw materials (articles, notes, conversations) go in; the LLM organizes them into a searchable, compiled vault. The system is designed so the LLM is the primary writer and reader — not a human filing things manually.
 
-Single active vault: **akasha** — an LLM-managed knowledge layer with atomic entries, compiled narratives, and a traversable graph.
+Primary writable vault: **akasha** — an LLM-managed knowledge layer with atomic entries, compiled narratives, and a traversable graph.
+Read-only bundle view: **capsule** — product-specific compiled documentation bundles for agents.
 
 ---
 
@@ -30,14 +31,17 @@ Single active vault: **akasha** — an LLM-managed knowledge layer with atomic e
       INDEX.md        master index (entry list + topic clusters)
       GRAPH.tsv       135 topic/concept edges (adjacency list)
       ALIASES.tsv     surface form → canonical name map
+    capsule/          read-only delivery vault
+      <product>/      pages/** + ATLAS.md + llms.txt + ctx/** + meta/** + manifest.json
 ```
 
 ```
 oh-my-brain/          this repo (code + specs + benchmarks)
-  views/
+  vault/
     omb/              omb CLI (unified dispatcher)
-    akasha/           akasha CLI (vault engine)
-    [deprecated]      owl / facet / lattice / cairn / wiki
+    akasha/           akasha CLI (writable brain view)
+    capsule/          capsule CLI (compiled bundle view)
+    [deprecated]      legacy experimental views
   docs/               specs, benchmarks, design notes
 ```
 
@@ -91,6 +95,24 @@ akasha compile --dump <topic>         # entries 덤프 → LLM에게 붙여넣�
 # vault 초기화/전환
 akasha init [path]
 akasha use <path>
+```
+
+### `capsule` — internal compiled bundle view
+
+Read-only delivery vault for external product docs. Capsule builds from `~/omb/source/<product>/` and writes to `~/omb/vault/capsule/<product>/`.
+
+```bash
+capsule build openclaw
+capsule search openclaw "pairing"
+capsule status [product]
+```
+
+Via the public CLI:
+
+```bash
+omb capsule build openclaw
+omb capsule search openclaw "pairing"
+omb capsule status
 ```
 
 ### Deprecated (all superseded by akasha)
@@ -186,20 +208,42 @@ CLAUDE.md registers this reflex globally.
 ```bash
 cd vault/omb && pipx install -e .
 cd vault/akasha && pipx install -e .
+cd vault/capsule && pipx install -e .
 
 # verify
 omb status
 akasha status
+capsule status
 ```
 
 Requires Python 3.10+, pipx.
 
 ---
 
-## Design Principles
+## Design Priorities
 
-1. **Raw = immutable** — source files are never modified after ingestion
-2. **LLM is the writer** — entries and compiled docs are written by LLM, not manually curated
-3. **Vault = data only** — no Python or code inside the vault directories
-4. **Evidence with records** — entries include why + alternatives considered, not just conclusions
-5. **Rebuildable** — delete vault, re-ingest sources, get equivalent result
+The operational failure uncovered on 2026-04-17 showed that the root risks in this system are **not speed or capacity** — they are **integrity, truthfulness, and traceability**. Design decisions therefore follow a tiered priority: higher tiers always win against lower tiers.
+
+**Tier 0 — Integrity invariants** (if broken, the system lies)
+- **P0.1 Truth singularity** — one active claim per topic; updates move old entries physically into `superseded/`, not just flag them in frontmatter.
+- **P0.2 Traceability** — every `source:` field must resolve to an existing file under `~/omb/source/`. Broken links reject writes.
+- **P0.3 Immutable source** — raw files are never modified post-ingest.
+- **P0.4 Rebuildable + proven quarterly** — source-only rebuild must succeed, and it is actually tested each quarter. Untested = nominal = dead.
+
+**Tier 1 — Enforcement** (how Tier 0 stays alive)
+- **P1.1 Discipline as code** — every write passes a machine-checked contract (`docs/ingest-contract-v2.md`). Convention-only rules are considered non-existent.
+- **P1.2 Health fails loudly** — violations surface as explicit fail states with the violating item listed, never as a "healthy" summary.
+- **P1.3 Merge requires normalize** — view merges and bulk imports must pass naming/frontmatter/source normalization before entering `entries/`.
+
+**Tier 2 — Quality** (nice-to-have, system survives without but degrades)
+- Atomic ~500 tok, evidence blocks required, graph edges suggested, compiled narratives refreshed quarterly.
+
+**Tier 3 — Performance** (last priority at current scale)
+- Index loading, search latency, storage footprint. Never sacrificed above tiers to optimize this layer at the current 636-entry / 3 MB scale.
+
+Full tier definitions, triggers, and current-state audit: `docs/priorities.md`.
+Lessons that forced this tier structure: `docs/experiment-3way-2026-04-17.md`.
+Enforced contract spec: `docs/ingest-contract-v2.md`.
+Vault folder is a fixed name (`~/omb/vault/akasha`). Version history lives in `docs/CHANGELOG.md`, not in the folder name. Experiments use temporary `akasha-rc*` siblings and are deleted on promotion. Full rules: `docs/vault-versioning.md`.
+
+Capsule follows the same source discipline but is intentionally read-only: it packages source into agent-friendly delivery bundles and does not create writable brain artifacts.

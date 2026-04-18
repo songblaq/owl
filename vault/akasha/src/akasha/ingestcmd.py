@@ -7,7 +7,7 @@ Usage:
     akasha ingest path/to/file.md --title my-topic --topic aria
 
 What this does:
-1. Copies the source file into ~/omb/source/ (if file path given)
+1. Copies the source file into ~/omb/input/ (if file path given)
 2. Prints an LLM action prompt — the LLM reads the source and writes
    atomic entries into entries/ following the akasha entry format
 3. Optionally runs `akasha index` to rebuild INDEX.md + GRAPH.tsv
@@ -96,9 +96,10 @@ def run_ingest(
     h = _short_hash(content)
 
     # ── destination paths ─────────────────────────────────────────────────────
-    source_dir = vault.parent.parent / "source"   # ~/omb/source/
+    # omb raw inputs live at ~/omb/input (2-vault split v3.2)
+    source_dir = Path("~/omb/input").expanduser()
     if not source_dir.exists():
-        source_dir = vault / "sources"            # fallback: vault/sources/
+        source_dir = vault / "sources"            # fallback: vault-local copy
 
     dest_source = source_dir / f"{today}-{slug}.md"
     entries_dir = vault / "entries"

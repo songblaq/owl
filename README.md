@@ -9,7 +9,8 @@
 
 Raw materials go in — the LLM organizes them into a searchable, compiled vault. Designed so the LLM is the primary writer *and* reader.
 
-Single active vault: **akasha** — atomic entries + compiled narratives + concept graph.
+Primary writable vault: **akasha** — atomic entries + compiled narratives + concept graph.
+Read-only delivery view: **capsule** — product-specific compiled bundles built from canonical source.
 
 ---
 
@@ -125,14 +126,20 @@ omb search "<query>"     # 3-layer search (compiled + entries + graph)
 omb ingest <file>        # add a file to vault
 omb ingest --text "..."  # add raw text
 omb health               # source coverage check
+omb capsule status       # read-only compiled bundle overview
+omb capsule search openclaw "pairing"   # search a product capsule
 ```
 
-Internal vault engine (for maintenance):
+Internal views / engines (for maintenance):
 
 ```bash
 akasha compile --dry-run          # show pending topics
 akasha compile --dump <topic>     # dump entries → LLM writes compiled/<topic>.md
 akasha index                      # rebuild INDEX.md + GRAPH.tsv
+
+capsule build openclaw            # build ~/omb/vault/capsule/openclaw
+capsule search openclaw "query"   # search product bundle
+capsule status [product]          # inspect bundle state
 ```
 
 ---
@@ -142,16 +149,19 @@ akasha index                      # rebuild INDEX.md + GRAPH.tsv
 ```
 ~/omb/
   source/          raw inputs (immutable — read-only after ingestion)
-  vault/akasha/    active vault
+  vault/akasha/    active writable vault
     entries/       atomic knowledge units (~500 tokens each)
     compiled/      LLM-written narrative docs (by topic)
     INDEX.md       master index (auto-generated)
     GRAPH.tsv      concept graph (topic/concept edges)
     ALIASES.tsv    surface form → canonical name map
+  vault/capsule/   read-only compiled bundles
+    <product>/     pages/** + ATLAS.md + llms.txt + ctx/** + meta/** + manifest.json
 
 oh-my-brain/       this repo (code + specs)
   vault/omb/       omb CLI (public interface)
   vault/akasha/    akasha vault engine (11 modules)
+  vault/capsule/   capsule bundle engine (read-only delivery view)
   skills/          shared skills (all runtimes via symlinks)
   plugins/
     openclaw/      OpenClaw plugin (Node.js, register(api))
@@ -178,13 +188,26 @@ omb search "<query>"
 
 ---
 
+## Obsidian compatibility
+
+The vault is pure markdown with `[[wiki links]]` and YAML frontmatter — **works natively in Obsidian** without any plugin:
+
+```bash
+# Open as Obsidian vault
+open -a Obsidian ~/omb/brain/live
+```
+
+You get graph view, backlinks, page preview, and built-in search for free. The LLM remains the writer; Obsidian is the viewer.
+
+---
+
 ## Design Principles
 
 1. **Raw = immutable** — source files are never modified after ingestion
-2. **LLM is the writer** — entries and compiled docs are written by LLM, not curated manually
-3. **Vault = data only** — no code inside the vault directories
-4. **Evidence with records** — entries include why + alternatives, not just conclusions
-5. **Rebuildable** — delete vault, re-ingest sources, get equivalent result
+2. **Akasha is writable** — entries and compiled docs are written by LLM, not curated manually
+3. **Capsule is read-only** — delivery bundles are rebuilt from source, not edited in place
+4. **Vault = data only** — no code inside the runtime vault directories
+5. **Rebuildable** — delete derived vault data, rebuild from source, get equivalent artifacts
 
 ---
 

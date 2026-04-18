@@ -42,9 +42,10 @@ git -C <REPO_ROOT> diff --name-only HEAD@{1} HEAD
 ```
 
 ### Step 3: 패키지 재설치 (소스 변경 시)
-`vault/akasha/` 또는 `vault/omb/` 변경 감지 시:
+`vault/akasha/`, `vault/capsule/`, 또는 `vault/omb/` 변경 감지 시:
 ```bash
 cd <REPO_ROOT>/vault/akasha && pipx install -e . --force
+cd <REPO_ROOT>/vault/capsule && pipx install -e . --force
 cd <REPO_ROOT>/vault/omb && pipx install -e . --force
 ```
 
@@ -73,6 +74,7 @@ OMB Update Report
 Version: 0.x.x → 0.x.x
 Changed files: N
   - vault/akasha/... (package reinstalled)
+  - vault/capsule/... (package reinstalled)
   - plugin/skills/... (skills re-synced)
   - plugin/CLAUDE.md (CLAUDE.md updated)
 

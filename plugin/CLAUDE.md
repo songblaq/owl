@@ -5,7 +5,9 @@
 
 사용자의 개인 LLM-maintained 지식 시스템. 프로젝트: `<!-- OMB:REPO -->` (GitHub: `songblaq/oh-my-brain`).
 
-단일 활성 vault: **akasha** (entries + compiled narratives + graph). owl/cairn/wiki는 deprecated.
+활성 writable vault: **akasha** (entries + compiled narratives + graph).
+읽기 전용 bundle view: **capsule** (`~/omb/vault/capsule/<product>/`).
+owl/cairn/wiki는 deprecated.
 
 ## CLI
 
@@ -14,6 +16,8 @@ omb status                    # vault 전체 현황
 omb search "<query>"          # 3-layer search (compiled + entries + graph)
 omb ingest <file>             # 새 지식 추가
 omb health                    # source coverage 확인
+omb capsule status            # read-only capsule bundle 상태
+omb capsule search openclaw "pairing"   # 제품 문서 번들 검색
 ```
 
 ## Data layer
@@ -27,6 +31,8 @@ omb health                    # source coverage 확인
     INDEX.md       master index
     GRAPH.tsv      concept graph
     ALIASES.tsv    surface → canonical map
+  vault/capsule/   read-only compiled bundles
+    <product>/     pages + ATLAS + llms + ctx + meta + manifest
 ```
 
 ## 핵심 규칙
@@ -58,5 +64,7 @@ omb health                    # source coverage 확인
 ## 기본 reflex
 
 사용자가 축적된 지식과 관련된 질문을 하면 **답변 전에** `omb search "<topic>"` 을 먼저 시도하는 게 기본 reflex. 결과가 있으면 해당 문서를 read 해서 근거로 답변. 결과가 없거나 빈약하면 그 사실을 명시하고 답변 후 사용자에게 `omb ingest` 로 자료 추가 제안.
+
+외부 오픈소스 프로젝트 문서를 agent-friendly 번들로 조회해야 할 때는 `omb capsule ...` 을 사용한다. Capsule은 Akasha처럼 누적·갱신되는 브레인이 아니라, source에서 다시 빌드되는 읽기 전용 delivery vault다.
 
 <!-- OMB:END -->

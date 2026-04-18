@@ -14,7 +14,7 @@ every view reads from them, no view writes to them.
 
 ## Location
 
-`brain-vault/sources/` — currently symlinked to `owl-vault/raw/`.
+`~/omb/source/`.
 
 ## Invariants
 
@@ -26,6 +26,12 @@ every view reads from them, no view writes to them.
    to a source (or to a chain of sources). Views that generate new
    knowledge (filing loop, research reports) file the result back as
    a new source.
+4. **Resolvable reference.** Any entry that references a source MUST
+   use a path that resolves to an existing file under `~/omb/source/`.
+   Accepted forms: absolute path (`~/omb/source/<file>`), or vault-relative
+   via symlink (`<vault>/sources/<file>` where `sources` is a symlink to
+   `~/omb/source`). Entries with unresolvable `source:` fields fail
+   `omb health` (principle 7 in ATLAS).
 
 ## What counts as a source
 
@@ -50,7 +56,11 @@ with. The source layer is not opinionated about filenames.
 
 ## Adding a new source
 
-1. Drop the file into `brain-vault/sources/` (or the appropriate
+1. Drop the file into `~/omb/source/` (or the appropriate
    subdirectory)
 2. Each view decides independently whether and how to ingest it
 3. No automatic propagation — views pull on demand, not push
+
+Examples:
+- `akasha` ingests sources into writable knowledge artifacts
+- `capsule` compiles sources into read-only delivery bundles
